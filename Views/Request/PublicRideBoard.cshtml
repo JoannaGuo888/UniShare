@@ -1,0 +1,53 @@
+﻿@model IEnumerable<UniShare.Models.Ride>
+
+@{
+    ViewData["Title"] = "PublicRideBoard";
+}
+
+<h1>Public Ride Board</h1>
+
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-auto">
+        <input name="from" class="form-control" placeholder="From" value="@ViewBag.SearchFrom" />
+    </div>
+    <div class="col-auto">
+        <input name="to" class="form-control" placeholder="Destination" value="@ViewBag.SearchTo">
+    </div>
+    <div class="col-auto">
+        <input name="date" type="date" class="form-control" value="@ViewBag.SearchDate">
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary">Search / Filter</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No available rides match your search.</div>
+}
+else
+{
+    foreach (var ride in Model)
+    {
+        <div class="card p-3 mb-3">
+            <h4>@ride.StartLocation → @ride.Destination</h4>
+            <p>Date: @ride.RideDate.ToString("dd MMM yyyy") | Time: @ride.RideTime</p>
+            <p>Seats Left: @ride.AvailableSeats | Price: €@ride.CostPerSeat</p>
+            <p>Driver: @ride.Driver.UserName</p>
+
+            <a asp-action="SendRequest" asp-route-rideId="@ride.RideId" class="btn btn-success">Request to Join</a>
+        </div>
+    }
+}

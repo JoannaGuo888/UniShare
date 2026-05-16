@@ -1,0 +1,92 @@
+﻿@model UniShare.Models.Ride
+
+@{
+    ViewData["Title"] = "ViewRide";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["MailTo"] != null)
+{
+    <a href="mailto:@TempData["MailTo"]?subject=@TempData["MailSubject"]&body=@TempData["MailBody"]"
+       class="btn btn-primary mb-3"
+       target="_blank">
+        Click Here to Send Notification Email to Passengers
+    </a>
+}
+
+<h1>Ride Details</h1>
+
+<div>
+    <h4>Ride</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartLocation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartLocation)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Destination)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Destination)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RideDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RideDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RideTime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RideTime)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AvailableSeats)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AvailableSeats)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CostPerSeat)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CostPerSeat)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RideStatus)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RideStatus)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Driver)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Driver.Email)
+        </dd>
+    </dl>
+</div>
+
+@if (ViewBag.CanEdit)
+{
+    <a asp-action="EditRide" asp-route-id="@Model.RideId" class="btn btn-warning">Edit Ride</a>
+    <a onclick="return confirm('Are you sure you want to delete this ride? All requests will be deleted too!');"
+       asp-action="DeleteRide"
+       asp-route-id="@Model.RideId"
+       class="btn btn-danger">
+        Delete Ride
+    </a>
+}
+else
+{
+    <button class="btn btn-secondary" disabled style="opacity:0.6">Edit (Unavailable)</button>
+}
+<a asp-action="DriverCalendar" class="btn btn-secondary">Back</a>
+

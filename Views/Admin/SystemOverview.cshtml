@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "SystemOverview";
+}
+
+<h1>System Overview</h1>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+    <button onclick="location.reload()" class="btn btn-primary">Retry</button>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card p-4 text-center">
+                <h3>Active Users</h3>
+                <h2>@ViewBag.OnlineUsers</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 text-center">
+                <h3>Active Rides</h3>
+                <h2>@ViewBag.ActiveRides</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 text-center">
+                <h3>Reports Today</h3>
+                <h2>@ViewBag.TodayReports</h2>
+            </div>
+        </div>
+    </div>
+}

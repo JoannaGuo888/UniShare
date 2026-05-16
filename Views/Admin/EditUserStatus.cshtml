@@ -1,0 +1,22 @@
+﻿@model UniShare.Models.User
+@{
+    ViewData["Title"] = "EditUserStatus";
+}
+
+<h1>Edit User Account Status</h1>
+
+<form method="post">
+    <p>Name: @Model.UserName</p>
+    <p>Current Status: @Model.AccountStatus</p>
+
+    <select name="newStatus" class="form-control mb-3">
+        <option value="Active">Active</option>
+        <option value="Suspended">Suspend Temporarily</option>
+        <option value="Banned">Ban Permanently</option>
+    </select>
+
+    <input name="reason" class="form-control mb-3" placeholder="Reason for change" required>
+
+    <button type="submit" class="btn btn-primary">Update Status</button>
+</form>
+

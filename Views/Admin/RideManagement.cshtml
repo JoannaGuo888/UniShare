@@ -1,0 +1,33 @@
+﻿@model List<UniShare.Models.Ride>
+@{
+    ViewData["Title"] = "RideManagement";
+}
+
+<h1>Ride Management</h1>
+
+<form method="get" class="mb-3">
+    <input name="searchRideId" placeholder="Search Ride ID" class="form-control w-25" value="@ViewBag.SearchRideId">
+    <button class="btn btn-primary mt-2">Search</button>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Ride ID</th>
+            <th>Driver</th>
+            <th>Route</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.RideId</td>
+            <td>@r.Driver.UserName</td>
+            <td>@r.StartLocation → @r.Destination</td>
+            <td>@r.RideStatus</td>
+            <td><a asp-action="RideDetails" asp-route-id="@r.RideId" class="btn btn-sm btn-info">View Details</a></td>
+        </tr>
+    }
+</table>

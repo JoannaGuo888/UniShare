@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "SendRequest";
+}
+
+<h1>Send Request to Join Ride</h1>
+
+<form method="post">
+@*     <input "type="hidden" name="rideId" value="@ViewBag.RideId" />
+ *@
+    <div class="mb-3">
+        <label>Message to Driver</label>
+        <textarea name="message" class="form-control" rows="4" placeholder="Say something to the driver ... " required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Confirm & Send Request</button>
+    <a asp-action="PublicRideBoard" class="btn btn-secondary">Cancel</a>
+</form>
+

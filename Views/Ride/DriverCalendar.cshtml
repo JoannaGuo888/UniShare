@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewData["Title"] = "DriverCalendar";
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (TempData["MailTo"] != null)
+{
+    <a href="mailto:@TempData["MailTo"]?subject=@TempData["MailSubject"]&body=@TempData["MailBody"]"
+       class="btn btn-danger mb-3"
+       target="_blank">
+        Click Here to Send Cancellation Email to Passengers
+    </a>
+}
+
+<h1>DriverCalendar</h1>
+
+
+<p>Select a date to create or view your rides</p>
+
+<input type="date" id="rideDate" class="form-control w-25" />
+<button onclick="goToDate()" class="btn btn-primary mt-2">Select Date</button>
+
+<script>
+    function goToDate(){
+        let d = document.getElementById("rideDate").value;
+        if (d) window.location.href = "/Ride/RidesByDate?date=" + d;
+    }
+</script>

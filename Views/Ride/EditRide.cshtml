@@ -1,0 +1,54 @@
+﻿@model UniShare.Models.Ride
+
+@{
+    ViewData["Title"] = "EditRide";
+}
+
+<h1>Edit Ride (Only Upcoming Rides Allowed)</h1>
+
+<h4>Ride</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditRide">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RideId" />
+            <div class="form-group">
+                <label asp-for="StartLocation" class="control-label">Start Location</label>
+                <input asp-for="StartLocation" class="form-control" required />
+                <span asp-validation-for="StartLocation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Destination" class="control-label">Destination</label>
+                <input asp-for="Destination" class="form-control" required />
+                <span asp-validation-for="Destination" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RideDate" class="control-label">Ride Date</label>
+                <input asp-for="RideDate" type="date" class="form-control" required />
+                <span asp-validation-for="RideDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RideTime" class="control-label">Ride Time</label>
+                <input asp-for="RideTime" type="time" class="form-control" required />
+                <span asp-validation-for="RideTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AvailableSeats" class="control-label">Available Seats</label>
+                <input asp-for="AvailableSeats" type="number" min="0" class="form-control" required />
+                <span asp-validation-for="AvailableSeats" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CostPerSeat" class="control-label">Cost per Seat</label>
+                <input asp-for="CostPerSeat" type="number" step="0.01" class="form-control" required/>
+                <span asp-validation-for="CostPerSeat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="ViewRide" asp-route-id="@Model.RideId" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+

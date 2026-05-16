@@ -1,0 +1,35 @@
+﻿@model List<UniShare.Models.User>
+@{
+    ViewData["Title"] = "UserManagement";
+}
+
+<h1>User Management</h1>
+
+<form method="get" class="mb-3">
+    <input name="search" class="form-control w-25" placeholder="Search name/email" value="@ViewBag.Search">
+    <button class="btn btn-primary mt-2">Search</button>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Join Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td>@u.UserName</td>
+            <td>@u.Email</td>
+            <td>@u.Role</td>
+            <td>@u.AccountStatus</td>
+            <td>@u.JoinDate.ToString("dd/MM/yyyy")</td>
+            <td><a asp-action="EditUserStatus" asp-route-id="@u.UserId" class="btn btn-sm btn-warning">Edit Status</a></td>
+        </tr>
+    }
+</table>

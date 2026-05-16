@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Welcome, @ViewBag.UserName</h1>
+
+<p class="lead">Your Role: <strong>@ViewBag.UserRole</strong></p>
+
+@if(ViewBag.UserRole == "Driver")
+{
+    <div class="card p-3 mb-3">
+        <h4>Driver Dashboard</h4>
+        <p>Manage your rides, calendar and incoming requests.</p>
+        <a asp-action="DriverCalendar" asp-controller="Ride" class="btn btn-primary">Open Calendar</a>
+        <a asp-action="AllRequestsReceived" asp-controller="Request" class="btn btn-success">View Requests</a>
+    </div>
+}
+@if (ViewBag.UserRole == "Passenger")
+{
+    <div class="card p-3 mb-3">
+        <h4>Passenger Dashboard</h4>
+        <p>Find rides and manage your join requests.</p>
+        <a asp-action="PublicRideBoard" asp-controller="Request" class="btn btn-primary">Browse Rides</a>
+        <a asp-action="MySentRequests" asp-controller="Request" class="btn btn-success">My Requests</a>
+    </div>
+}
+@if (ViewBag.UserRole == "Admin")
+{
+    <div class="card p-3 mb-3">
+        <h4>Admin Dashboard</h4>
+        <p>Monitor system, users, rides and reports.</p>
+        <a asp-action="SystemOverview" asp-controller="Admin" class="btn btn-primary">System Overview</a>
+        <a asp-action="UserManagement" asp-controller="Admin" class="btn btn-secondary">Manage Users</a>
+    </div>
+}

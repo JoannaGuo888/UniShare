@@ -1,0 +1,58 @@
+﻿@model List<UniShare.Models.RideRequest>
+@{
+    ViewData["Title"] = "MySentRequests";
+}
+
+<h1>My Sent Requests</h1>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+
+
+
+<h3 style="color:green">Pending Requests</h3>
+@foreach(var item in Model.Where(r => r.RequestStatus == "New"))
+{
+    <div class="border p-3 mb-2 rounded">
+        <p>Ride: @item.Ride.StartLocation → @item.Ride.Destination</p>
+        <p>Date: @item.Ride.RideDate.ToString("dd/MM/yyyy")</p>
+        <p>Time: @item.Ride.RideTime</p>        
+        <p>Status: <span class="text-success">@item.RequestStatus</span></p>
+        <a asp-action="CancelSentRequest" asp-route-id="@item.RequestId" class="btn btn-danger btn-sm">Cancel Request</a>
+        <a href="mailto:@item.Driver.Email" class="btn btn-info btn-sm">Message Driver</a>
+    </div>
+}
+
+<h3 style="color:blue">Accepted Requests</h3>
+@foreach (var item in Model.Where(r => r.RequestStatus == "Accepted"))
+{
+    <div class="border p-3 mb-2 rounded">
+        <p>Ride: @item.Ride.StartLocation → @item.Ride.Destination</p>
+        <p>Date: @item.Ride.RideDate.ToString("dd/MM/yyyy")</p>
+        <p>Time: @item.Ride.RideTime</p>
+        <p>Status: <span class="text-success">@item.RequestStatus</span></p>
+        <a href="mailto:@item.Driver.Email" class="btn btn-info btn-sm">Message Driver</a>
+        <small class="text-muted">Contact driver to cancel</small>
+    </div>
+}
+
+<h3 style="color:grey">Completed / Cancelled Requests</h3>
+@foreach (var item in Model.Where(r => r.RequestStatus != "New" && r.RequestStatus != "Accepted"))
+{
+    <div class="border p-3 mb-2 rounded text-muted">
+        <p>Ride: @item.Ride.StartLocation → @item.Ride.Destination</p>
+        <p>Date: @item.Ride.RideDate.ToString("dd/MM/yyyy")</p>
+        <p>Time: @item.Ride.RideTime</p>
+        @if (item.RequestStatus == "CancelledByDriver")
+        {
+            <p class="text-danger fw-bold">
+                🔔 Driver CANCELLED this accepted ride
+            </p>
+        }
+        <p>Status: <span class="text-success">@item.RequestStatus</span></p>
+        <small>No actions available</small>
+    </div>
+}

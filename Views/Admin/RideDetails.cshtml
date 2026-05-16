@@ -1,0 +1,40 @@
+﻿@model UniShare.Models.Ride
+@{
+    ViewData["Title"] = "RideDetails";
+}
+
+@if (TempData["FlaggedDriver"] != null)
+{
+    <div class="alert alert-danger"><strong>⚠️ DRIVER FLAGGED FOR REVIEW</strong></div>
+}
+
+<h1>Ride Details</h1>
+
+<div class="card p-4">
+    <h3>Ride Information</h3>
+    <p><strong>Ride ID:</strong> @Model.RideId</p>
+    <p><strong>Driver:</strong> @Model.Driver.UserName</p>
+    <p><strong>Route:</strong> @Model.StartLocation → @Model.Destination</p>
+    <p><strong>Date:</strong> @Model.RideDate.ToString("dd MMM yyyy")</p>
+    <p><strong>Time:</strong> @Model.RideTime</p>
+    <p><strong>Available Seats:</strong> @Model.AvailableSeats</p>
+    <p><strong>Cost per Seat:</strong> €@Model.CostPerSeat</p>
+    <p><strong>Status:</strong> @Model.RideStatus</p>
+</div>
+
+<form asp-action="ResolveDispute" method="post" class="card p-3">
+    <input type="hidden" name="rideId" value="@Model.RideId" />
+
+    <h3>Resolve Dispute</h3>
+    <select name="resolution" class="form-control mb-2">
+        <option value="Dismiss Dispute">Dismiss Dispute</option>
+        <option value="Issue Refund">Issue Refund to Passenger</option>
+        <option value="Flag Driver for Review">Flag Driver for Review</option>
+    </select>
+
+    <button type="submit" class="btn btn-warning">Confirm Resolution</button>
+</form>
+
+<br />
+<a asp-action="RideManagement" class="btn btn-secondary">Back to All Rides</a>
+

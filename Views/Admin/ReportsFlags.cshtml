@@ -1,0 +1,16 @@
+﻿@model List<UniShare.Models.Report>
+@{
+    ViewData["Title"] = "ReportsFlags";
+}
+
+<h1>Reports & Flags</h1>
+
+@foreach (var r in Model)
+{
+    <div class="card p-3 mb-3">
+        <h5>Priority: @r.Priority</h5>
+        <p>Reason: @r.ReportReason</p>
+        <p>Status: @r.ReportStatus</p>
+        <a asp-action="TakeReportAction" asp-route-reportId="@r.ReportId" class="btn btn-warning">Take Action</a>
+    </div>
+}
