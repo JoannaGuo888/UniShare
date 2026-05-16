@@ -52,6 +52,12 @@
                 🔔 Driver CANCELLED this accepted ride
             </p>
         }
+        @if (item.RequestStatus == "RideExpired")
+        {
+            <p class="text-danger fw-bold">
+                🔔 THIS RIDE HAS EXPIRED
+            </p>
+        }
         <p>Status: <span class="text-success">@item.RequestStatus</span></p>
         <small>No actions available</small>
     </div>

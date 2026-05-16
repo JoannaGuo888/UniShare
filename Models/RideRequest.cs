@@ -15,7 +15,7 @@ namespace UniShare.Models
         public int DriverId { get; set; }
         public string Message { get; set; }
         public DateTime RequestCreatedTime { get; set; }
-        [RegularExpression(@"^(New|Accepted|Declined|CancelledByPassenger|CancelledByDriver|CancelledByAdmin)$")]
+        [RegularExpression(@"^(New|Accepted|Declined|CancelledByPassenger|CancelledByDriver|CancelledByAdmin|RideExpired)$")]
 
         public string RequestStatus { get; set; }
         

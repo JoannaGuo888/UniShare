@@ -19,9 +19,24 @@ namespace UniShare.Controllers
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         private string CurrentRole => HttpContext.Session.GetString("UserRole") ?? "";
 
+        private async Task UpdateRequestsForExpiredRides()
+        {
+            var expiredRidesIds = await _context.Rides.Where(r => r.RideStatus == "Expired").Select(r => r.RideId).ToListAsync();
+            if(!expiredRidesIds.Any()) { return; }
+
+            // Find requests for expired rides
+            var reqs = await _context.RideRequests.Where(r => expiredRidesIds.Contains(r.RideId) && (r.RequestStatus == "New" || r.RequestStatus == "Accepted")).ToListAsync();
+            foreach(var req in reqs)
+            {
+                req.RequestStatus = "RideExpired";
+            }
+            await _context.SaveChangesAsync();
+        }
+
         // Driver: All Requests Received
         public async Task<IActionResult> AllRequestsReceived()
         {
+            await UpdateRequestsForExpiredRides();
             int driverId = CurrentUserId;
             var requests = await _context.RideRequests.Include(r => r.Ride).Include(r => r.Passenger).Where(r => r.DriverId == driverId).OrderByDescending(r => r.RequestCreatedTime).ToListAsync();
             return View(requests);
@@ -34,6 +49,11 @@ namespace UniShare.Controllers
             if (req == null)
             {
                 return NotFound();
+            }
+            if (req.Ride == null || req.Ride.RideStatus == "Expired")
+            {
+                TempData["Error"] = "Cannot accept: Ride expired.";
+                return RedirectToAction("AllRequestsReceived");
             }
             // Update request status
             req.RequestStatus = "Accepted";
@@ -51,6 +71,11 @@ namespace UniShare.Controllers
             if(req == null)
             {
                 return NotFound();
+            }
+            if (req.Ride == null || req.Ride.RideStatus == "Expired")
+            {
+                TempData["Error"] = "Cannot decline: Ride expired.";
+                return RedirectToAction("AllRequestsReceived");
             }
             req.RequestStatus = "Declined";
 
@@ -71,6 +96,11 @@ namespace UniShare.Controllers
             if (req == null)
             {
                 return NotFound();
+            }
+            if (req.Ride == null || req.Ride.RideStatus == "Expired")
+            {
+                TempData["Error"] = "Cannot cancel: Ride expired.";
+                return RedirectToAction("AllRequestsReceived");
             }
 
             string passengerEmail = null;
@@ -201,9 +231,14 @@ namespace UniShare.Controllers
                 TempData["Error"] = "Ride not found";
                 return RedirectToAction("PublicRideBoard");
             }
+            if (ride.RideStatus == "Expired")
+            {
+                TempData["Error"] = "Cannot send request: Ride has expired.";
+                return RedirectToAction("PublicRideBoard");
+            }
 
             // No seats left check
-            if(ride.AvailableSeats <= 0)
+            if (ride.AvailableSeats <= 0)
             {
                 TempData["Error"] = "Ride no longer available due to capacity";
                 return RedirectToAction("PublicRideBoard");
@@ -234,6 +269,7 @@ namespace UniShare.Controllers
         // Passenger: All Requests Sent
         public async Task<IActionResult> MySentRequests()
         {
+            await UpdateRequestsForExpiredRides();
             var myRequests = await _context.RideRequests.Include(r=>r.Ride).Include(r=>r.Driver).Where(r=>r.PassengerId == CurrentUserId).OrderByDescending(r=>r.RequestCreatedTime).ToListAsync();
             return View(myRequests);
         }
