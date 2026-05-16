@@ -21,6 +21,21 @@ namespace UniShare.Controllers
             return HttpContext.Session.GetInt32("UserId") ?? 0;
         }
 
+        // Auto-Mark expired rides
+        public async Task MarkExpiredRides()
+        {
+            // Get all rides that are upcoming and their date/time is in the past
+            var upcomingRides = await _context.Rides.Where(r => r.RideStatus == "Upcoming").ToListAsync();
+            var expiredRides = upcomingRides.Where(r => r.RideDate.Add(r.RideTime) < DateTime.Now);
+            
+            foreach(var ride  in expiredRides)
+            {
+                ride.RideStatus = "Expired";
+            }
+            await _context.SaveChangesAsync();
+        }
+
+
 
         // Driver Calendar Page
 
@@ -33,6 +48,7 @@ namespace UniShare.Controllers
         // Load rides for selected date
         public async Task<IActionResult> RidesByDate(DateTime date)
         {
+            await MarkExpiredRides();
             int driverId = GetCurrentDriverId();
             var rides = await _context.Rides
                 .Where(r=>r.DriverId == driverId && r.RideDate.Date==date.Date)
@@ -84,6 +100,7 @@ namespace UniShare.Controllers
         // View Single Ride Details
         public async Task<IActionResult> ViewRide(int id)
         {
+            await MarkExpiredRides();
             var ride = await _context.Rides.FindAsync(id);
             if (ride == null)
             {
@@ -100,8 +117,10 @@ namespace UniShare.Controllers
         public async Task<IActionResult> EditRide(int id)
         {
             var ride = await _context.Rides.FindAsync(id);
+            
             if(ride == null || ride.RideStatus != "Upcoming")
             {
+                TempData["Error"] = "Cannot edit: Only upcoming rides can be edited";
                 return RedirectToAction("ViewRide", new { id });
             }
             return View(ride);

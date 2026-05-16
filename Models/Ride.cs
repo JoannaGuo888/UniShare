@@ -18,7 +18,7 @@ namespace UniShare.Models
         [Required]
         public int AvailableSeats { get; set; }
         public double CostPerSeat { get; set; }
-        [RegularExpression(@"^(Active|Upcoming|Completed|Cancelled|Disputed|DisputeResolved)$")]
+        [RegularExpression(@"^(Active|Upcoming|Completed|Cancelled|Expired|Disputed|DisputeResolved)$")]
 
         public string RideStatus { get; set; }
 
