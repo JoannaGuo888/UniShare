@@ -6,6 +6,16 @@
     bool canCreateRide = selectedDate >= DateTime.Today;
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
 <h1>Rides for @selectedDate.ToString("dd MM yyyy")</h1>
 <a asp-action = "DriverCalendar" class="btn btn-secondary mb-3">Back to Calendar</a> 
 
@@ -37,7 +47,20 @@ else
 
             @if (ride.RideStatus == "Upcoming")
             {
-                <a asp-action="StartRide" asp-route-id="@ride.RideId" class="btn btn-warning btn-sm">Ride Started</a>
+                DateTime scheduled = ride.RideDate.Add(ride.RideTime);
+                DateTime now = DateTime.Now;
+
+                if (now >= scheduled.AddMinutes(-30) && now <= scheduled.AddHours(2))
+                {
+
+                    <a asp-action="StartRide" asp-route-id="@ride.RideId" class="btn btn-warning btn-sm" onclick="return confirm('Start this ride?')">Ride Started</a>
+                }
+                else if (now < scheduled.AddMinutes(-30))
+                {
+                    <p class="text-warning">
+                        🕒 Ride not ready yet. You can start 30 minutes before scheduled time.
+                    </p>
+                }
             }
             @if (ride.RideStatus == "Active")
             {

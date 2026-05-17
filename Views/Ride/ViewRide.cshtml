@@ -88,5 +88,5 @@ else
 {
     <button class="btn btn-secondary" disabled style="opacity:0.6">Edit (Unavailable)</button>
 }
-<a asp-action="DriverCalendar" class="btn btn-secondary">Back</a>
+<a asp-action="RidesByDate" asp-route-date="@Model.RideDate.ToString("yyyy-MM-dd")" class="btn btn-secondary">Back</a>
 

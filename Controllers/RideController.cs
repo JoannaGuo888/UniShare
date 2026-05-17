@@ -21,12 +21,12 @@ namespace UniShare.Controllers
             return HttpContext.Session.GetInt32("UserId") ?? 0;
         }
 
-        // Auto-Mark expired rides
+        // Auto-Mark expired rides (only if 2 hours past time and still upcoming)
         public async Task MarkExpiredRides()
         {
             // Get all rides that are upcoming and their date/time is in the past
             var upcomingRides = await _context.Rides.Where(r => r.RideStatus == "Upcoming").ToListAsync();
-            var expiredRides = upcomingRides.Where(r => r.RideDate.Add(r.RideTime) < DateTime.Now);
+            var expiredRides = upcomingRides.Where(r => r.RideDate.Add(r.RideTime).AddHours(2)< DateTime.Now);
             
             foreach(var ride  in expiredRides)
             {
@@ -92,7 +92,7 @@ namespace UniShare.Controllers
             _context.Rides.Add(ride);
             await _context.SaveChangesAsync();
             TempData["Success"] = "Ride successfully created";
-            return RedirectToAction("DriverCalendar");
+            return RedirectToAction("RidesByDate", new {date=ride.RideDate});
 
 
         }
@@ -248,6 +248,13 @@ namespace UniShare.Controllers
             if (ride == null)
             {
                 return NotFound();
+            }
+            DateTime scheduledStart = ride.RideDate.Add(ride.RideTime);
+            // Can't start before 30 mins of scheduled time
+            if(DateTime.Now < scheduledStart.AddMinutes(-30))
+            {
+                TempData["Error"] = $"You can only start this ride 30 minutes before its scheduled time {scheduledStart:HH:mm}.";
+                return RedirectToAction("ViewRide", new { id });
             }
             ride.RideStatus = "Active";
             // Auto cancel all pending requests for this ride
