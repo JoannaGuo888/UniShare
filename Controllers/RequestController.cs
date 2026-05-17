@@ -19,6 +19,19 @@ namespace UniShare.Controllers
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         private string CurrentRole => HttpContext.Session.GetString("UserRole") ?? "";
 
+        private async Task MarkExpiredRides()
+        {
+            // Get all rides that are upcoming and their date/time is in the past
+            var upcomingRides = await _context.Rides.Where(r => r.RideStatus == "Upcoming").ToListAsync();
+            var expiredRides = upcomingRides.Where(r => r.RideDate.Add(r.RideTime).AddHours(2) < DateTime.Now);
+
+            foreach (var ride in expiredRides)
+            {
+                ride.RideStatus = "Expired";
+            }
+            await _context.SaveChangesAsync();
+        }
+
         private async Task UpdateRequestsForExpiredRides()
         {
             var expiredRidesIds = await _context.Rides.Where(r => r.RideStatus == "Expired").Select(r => r.RideId).ToListAsync();
@@ -181,8 +194,7 @@ namespace UniShare.Controllers
         // Passenger: Public Ride Board
         public async Task<IActionResult> PublicRideBoard(string? from, string? to, DateTime? date)
         {
-            RideController rc = new RideController(_context);
-            await rc.MarkExpiredRides();
+            await MarkExpiredRides();
             var allRides =  _context.Rides.Include(r => r.Driver).Where(r => r.RideStatus == "Upcoming" && r.AvailableSeats > 0).AsQueryable();
             // Search filter
             if (!string.IsNullOrEmpty(from))
@@ -201,7 +213,8 @@ namespace UniShare.Controllers
             }
 
             // Sort by time
-            var result = await allRides.OrderBy(r => r.RideDate).ThenBy(r => r.RideTime).ToListAsync();
+            var availableRides = await allRides.ToListAsync();
+            var result = availableRides.Where(r => r.RideDate.Add(r.RideTime) > DateTime.Now).OrderBy(r => r.RideDate).ThenBy(r => r.RideTime).ToList();
             ViewBag.SearchFrom = from;
             ViewBag.SearchTo = to;
             ViewBag.SearchDate = date;
