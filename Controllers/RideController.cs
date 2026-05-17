@@ -252,9 +252,9 @@ namespace UniShare.Controllers
             ride.RideStatus = "Active";
             // Auto cancel all pending requests for this ride
             var reqctrl = new RequestController(_context);
-            reqctrl.AutoCancelWhenRideStarted(id);
+            await reqctrl.AutoCancelWhenRideStarted(id);
             await _context.SaveChangesAsync();
-            return RedirectToAction("DriverDashboard", "Home");
+            return RedirectToAction("RidesByDate", new {date=ride.RideDate});
         }
 
         // Finish Ride
@@ -267,7 +267,7 @@ namespace UniShare.Controllers
             }
             ride.RideStatus = "Completed";
             await _context.SaveChangesAsync();
-            return RedirectToAction("DriverDashboard", "Home");
+            return RedirectToAction("RidesByDate", new { date=ride.RideDate });
 
         }
 

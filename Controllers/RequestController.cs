@@ -148,7 +148,7 @@ namespace UniShare.Controllers
         
 
         // 30 mins auto cancel (Admin System Logic)
-        public async void AutoCancelExpiredRequests()
+        public async Task AutoCancelExpiredRequests()
         {
             var expired = await _context.RideRequests.Include(r => r.Ride).Where(r => r.RequestStatus == "New" && DateTime.Now.Subtract(r.RequestCreatedTime).TotalMinutes > 30).ToListAsync();
             foreach(var req in expired)
@@ -164,7 +164,7 @@ namespace UniShare.Controllers
         }
 
         // auto cancel all pending requests if ride started
-        public async void AutoCancelWhenRideStarted(int rideId)
+        public async Task AutoCancelWhenRideStarted(int rideId)
         {
             var pending = await _context.RideRequests.Include(r => r.Ride).Where(r => r.RideId == rideId && r.RequestStatus == "New").ToListAsync();
             foreach( var req in pending)
