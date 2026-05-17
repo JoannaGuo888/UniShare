@@ -6,6 +6,7 @@
     bool canCreateRide = selectedDate >= DateTime.Today;
 }
 
+
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success">@TempData["Success"]</div>
@@ -15,6 +16,14 @@
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
+@if (TempData["MailTo"] != null)
+{
+    <a href="mailto:@TempData["MailTo"]?subject=@TempData["MailSubject"]&body=@TempData["MailBody"]"
+       class="btn btn-primary mb-3" target="_blank">
+        Email to notify passengers of the ride that has started
+    </a>
+}
+
 
 <h1>Rides for @selectedDate.ToString("dd MM yyyy")</h1>
 <a asp-action = "DriverCalendar" class="btn btn-secondary mb-3">Back to Calendar</a> 

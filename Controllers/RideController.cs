@@ -260,7 +260,24 @@ namespace UniShare.Controllers
             // Auto cancel all pending requests for this ride
             var reqctrl = new RequestController(_context);
             await reqctrl.AutoCancelWhenRideStarted(id);
+            // Get accepted passengers for email
+            var acceptedPassengers = await _context.RideRequests.Include(r => r.Passenger).Where(r => r.RideId == id && r.RequestStatus == "Accepted").Select(r => r.Passenger.Email).ToListAsync();
+            // Send email notification
+
+            if (acceptedPassengers.Any())
+            {
+                string to = string.Join(",", acceptedPassengers);
+                string subject = "Your Ride Has Started!";
+                string body = $"Hello! Your ride from {ride.StartLocation} to {ride.Destination} on {ride.RideDate:dd/MM/yyyy} at {ride.RideTime} has STARTED.\n Thank you for using UniShare!";
+
+                // Store in TempData for your mail system
+                TempData["MailTo"] = to;
+                TempData["MailSubject"] = subject;
+                TempData["MailBody"] = body;
+            }
+
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Ride started!";
             return RedirectToAction("RidesByDate", new {date=ride.RideDate});
         }
 
