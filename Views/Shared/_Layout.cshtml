@@ -88,10 +88,32 @@
             </div>
         </nav>
     </header>
+    @inject UniShare.Data.UniShareDbContext DbContext
+
+    @{
+        bool isSuspended = false;
+        int? userId = Context.Session.GetInt32("UserId");
+
+        if (userId.HasValue)
+        {
+            var user = DbContext.Users.Find(userId.Value);
+            if (user != null)
+            {
+                isSuspended = user.AccountStatus == "Suspended";
+            }
+        }
+    }
+
+    @if (isSuspended)
+    {
+        <div class="alert alert-danger text-center p-3 m-0 rounded-0">
+            <h4>⚠ ACCOUNT SUSPENDED ⚠</h4>
+            <p class="mb-0">You cannot use any ride features. Please contact the administrator.</p>
+        </div>
+    }
 
     <div class="container">
         <main role="main" class="pb-3">
-
             @RenderBody()
         </main>
     </div>

@@ -3,6 +3,17 @@
     ViewData["Title"] = "Dashboard";
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+
+
 <h1>Welcome, @ViewBag.UserName</h1>
 
 <p class="lead">Your Role: <strong>@ViewBag.UserRole</strong></p>

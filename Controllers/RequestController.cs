@@ -16,6 +16,16 @@ namespace UniShare.Controllers
             _context = context;
         }
 
+        private bool IsUserSuspended()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return false;
+
+            var user = _context.Users.Find(userId.Value);
+            if (user == null) return false;
+
+            return user.AccountStatus == "Suspended";
+        }
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         private string CurrentRole => HttpContext.Session.GetString("UserRole") ?? "";
 
@@ -58,6 +68,11 @@ namespace UniShare.Controllers
         // Accept Request
         public async Task<IActionResult> AcceptRequest(int id)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             var req = await _context.RideRequests.Include(r => r.Ride).FirstOrDefaultAsync(r => r.RequestId == id);
             if (req == null)
             {
@@ -80,6 +95,11 @@ namespace UniShare.Controllers
         // Decline Request
         public async Task<IActionResult> DeclineRequest(int id)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             var req = await _context.RideRequests.Include(r => r.Ride).FirstOrDefaultAsync(r => r.RequestId == id);
             if(req == null)
             {
@@ -105,6 +125,11 @@ namespace UniShare.Controllers
         // Driver Cancel Accepted Request
         public async Task<IActionResult> CancelAcceptedRequest(int id)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             var req = await _context.RideRequests.Include(r => r.Ride).Include(r=>r.Passenger).FirstOrDefaultAsync(r => r.RequestId == id);
             if (req == null)
             {
@@ -233,6 +258,11 @@ namespace UniShare.Controllers
         [HttpPost]
         public async Task<IActionResult> SendRequest(string message, int rideId)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             if (CurrentUserId == 0)
             {
                 TempData["Error"] = "You must be logged in to send a request";
@@ -290,6 +320,11 @@ namespace UniShare.Controllers
         // Passenger: Cancel Pending Request
         public async Task<IActionResult> CancelSentRequest(int id)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             var req = await _context.RideRequests.Include(r=>r.Ride).FirstOrDefaultAsync(r=>r.RequestId== id);
             if(req == null || req.PassengerId != CurrentUserId)
             {

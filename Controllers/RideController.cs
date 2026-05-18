@@ -15,6 +15,18 @@ namespace UniShare.Controllers
             _context = context;
         }
 
+
+        private bool IsUserSuspended()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return false;
+
+            var user = _context.Users.Find(userId.Value);
+            if (user == null) return false;
+
+            return user.AccountStatus == "Suspended";
+        }
+
         // Get logged-in Driver ID from Session
         private int GetCurrentDriverId()
         {
@@ -73,6 +85,11 @@ namespace UniShare.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRide(Ride ride)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             var lockDate = ride.RideDate;
 
             DateTime fullRideTime = lockDate + ride.RideTime;
@@ -129,6 +146,11 @@ namespace UniShare.Controllers
         [HttpPost]
         public async Task<IActionResult> EditRide(Ride ride)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             var existing = await _context.Rides.FindAsync(ride.RideId);
             if(existing == null || existing.RideStatus != "Upcoming")
             {
@@ -187,6 +209,11 @@ namespace UniShare.Controllers
         // Delete Ride
         public async Task<IActionResult> DeleteRide(int id)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             var ride = await _context.Rides.FirstOrDefaultAsync(r => r.RideId == id);
 
             if(ride == null )
@@ -244,6 +271,11 @@ namespace UniShare.Controllers
         // Start Ride
         public async Task<IActionResult> StartRide(int id)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             var ride = await _context.Rides.FindAsync(id);
             if (ride == null)
             {
@@ -284,6 +316,11 @@ namespace UniShare.Controllers
         // Finish Ride
         public async Task<IActionResult> FinishRide(int id)
         {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
             var ride = await _context.Rides.FindAsync(id);
             if(ride == null)
             {

@@ -16,6 +16,17 @@ namespace UniShare.Controllers
             _context = context;
         }
 
+        private bool IsUserSuspended()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return false;
+
+            var user = _context.Users.Find(userId.Value);
+            if (user == null) return false;
+
+            return user.AccountStatus == "Suspended";
+        }
+
         // Register Page
         public IActionResult Register() => View();
 
@@ -51,6 +62,12 @@ namespace UniShare.Controllers
             if (user == null)
             {
                 TempData["Error"] = "Invalid username or password or role!"; // TempData to prevent form resubmission
+                return View();
+            }
+
+            if (user.AccountStatus == "Banned")
+            {
+                TempData["Error"] = "Your account is BANNED. Cannot login.";
                 return View();
             }
 
