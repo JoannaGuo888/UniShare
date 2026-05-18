@@ -1,11 +1,17 @@
 ﻿@model UniShare.Models.Ride
 @{
     ViewData["Title"] = "RideDetails";
+    var disputeReports = ViewBag.DisputeReports as List<UniShare.Models.Report>;
+    var _context = ViewBag.DbContext as UniShare.Data.UniShareDbContext;
 }
 
 @if (TempData["FlaggedDriver"] != null)
 {
     <div class="alert alert-danger"><strong>⚠️ DRIVER FLAGGED FOR REVIEW</strong></div>
+}
+@if (TempData["FlaggedPassenger"] != null)
+{
+    <div class="alert alert-warning"><strong>⚠️ PASSENGER FLAGGED FOR REVIEW</strong></div>
 }
 
 <h1>Ride Details</h1>
@@ -14,6 +20,7 @@
     <h3>Ride Information</h3>
     <p><strong>Ride ID:</strong> @Model.RideId</p>
     <p><strong>Driver:</strong> @Model.Driver.UserName</p>
+    <p><strong>Driver ID:</strong> @Model.DriverId</p>
     <p><strong>Route:</strong> @Model.StartLocation → @Model.Destination</p>
     <p><strong>Date:</strong> @Model.RideDate.ToString("dd MMM yyyy")</p>
     <p><strong>Time:</strong> @Model.RideTime</p>
@@ -22,18 +29,74 @@
     <p><strong>Status:</strong> @Model.RideStatus</p>
 </div>
 
-<form asp-action="ResolveDispute" method="post" class="card p-3">
-    <input type="hidden" name="rideId" value="@Model.RideId" />
 
-    <h3>Resolve Dispute</h3>
-    <select name="resolution" class="form-control mb-2">
-        <option value="Dismiss Dispute">Dismiss Dispute</option>
-        <option value="Issue Refund">Issue Refund to Passenger</option>
-        <option value="Flag Driver for Review">Flag Driver for Review</option>
-    </select>
+@if (Model.DisputeResolution != null && disputeReports != null && disputeReports.Any())
+{
+    <div class="card p-4 mb-3 border-danger">
+        <h3 class="text-danger">📞 All Reports for This Ride</h3>
 
-    <button type="submit" class="btn btn-warning">Confirm Resolution</button>
-</form>
+    @foreach (var report in disputeReports)
+    {
+        
+        var reporter = _context.Users.FirstOrDefault(u => u.UserId == report.ReporterUserId);
+        var subject = _context.Users.FirstOrDefault(u => u.UserId == report.SubjectUserId);
+        
+
+        <div class="border p-3 mb-2 rounded">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>👤 Reported By</h5>
+                    @if (reporter != null)
+                    {
+                        <p><strong>Name:</strong> @reporter.UserName</p>
+                        <p><strong>Email:</strong> @reporter.Email</p>
+                        <p><strong>ID:</strong> @report.ReporterUserId</p>
+                        <p><strong>Role:</strong> @reporter.Role</p>
+                        }
+                    else
+                    {
+                        <p>User not found (ID: @report.ReporterUserId)</p>
+                    }
+                </div>
+                <div class="col-md-6">
+                    <h5>👤 Reported User</h5>
+                    @if (subject != null)
+                    {
+                        <p><strong>Name:</strong> @subject.UserName</p>
+                        <p><strong>Email:</strong> @subject.Email</p>
+                        <p><strong>ID:</strong> @report.SubjectUserId</p>
+                        <p><strong>Role:</strong> @subject.Role</p>
+                        }
+                    else
+                    {
+                        <p>User not found (ID: @report.SubjectUserId)</p>
+                    }
+                </div>
+            </div>
+            <p><strong>Reason:</strong><br>@report.ReportReason</p>
+            <p><strong>Time:</strong> @report.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><strong>Priority:</strong> @report.Priority</p>
+        </div>
+    }    
+    </div>
+}
+
+@if(Model.RideStatus == "Disputed")
+{
+    <form asp-action="ResolveDispute" method="post" class="card p-3">
+        <input type="hidden" name="rideId" value="@Model.RideId" />
+
+        <h3>Resolve Dispute</h3>
+        <select name="resolution" class="form-control mb-2">
+            <option value="Dismiss Dispute">Dismiss Dispute</option>
+            <option value="Issue Refund">Issue Refund to Passenger</option>
+            <option value="Flag Driver for Review">Flag Driver for Review</option>
+            <option value="Flag Passenger for Review">Flag Passenger for Review</option>
+        </select>
+
+        <button type="submit" class="btn btn-warning">Confirm Resolution</button>
+    </form>
+}
 
 <br />
 <a asp-action="RideManagement" class="btn btn-secondary">Back to All Rides</a>

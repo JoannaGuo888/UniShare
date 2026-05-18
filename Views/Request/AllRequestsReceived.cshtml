@@ -4,10 +4,6 @@
     ViewData["Title"] = "AllRequestsReceived";
 }
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
 
 @if (TempData["MailTo"] != null)
 {
@@ -49,6 +45,11 @@
 
         <a href="mailto:@item.Passenger.Email" class="btn btn-info btn-sm">Message Sender</a>        
         <a asp-action="CancelAcceptedRequest" asp-route-id="@item.RequestId" class="btn btn-warning btn-sm">Cancel</a>
+        <form asp-action="ReportPassenger" asp-controller="Request" method="post" class="mt-2" onsubmit="return confirm('Are you sure you want to submit this report?');">
+            <input type="hidden" name="requestId" value="@item.RequestId" />
+            <textarea name="reason" class="form-control form-control-sm mb-1 bg-light text-muted" placeholder="Report passenger..." required></textarea>
+            <button class="btn btn-danger btn-sm w-100">Report This Passenger</button>
+        </form>
     </div>
 }
 

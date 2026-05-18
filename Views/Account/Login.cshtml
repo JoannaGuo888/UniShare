@@ -5,15 +5,6 @@
 }
 
 <h1>Login</h1>
-@if (TempData["Success"] != null)
-{
-    <div class="text-success mb-2">@TempData["Success"]</div>
-}
-
-@if (TempData["Error"] != null)
-{
-    <div style="color:red">@TempData["Error"]</div>
-}
 
 <form method="post">
     <label asp-for="Email" class="form-label">Email</label>

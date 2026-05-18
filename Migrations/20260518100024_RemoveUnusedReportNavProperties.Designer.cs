@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniShare.Data;
 
@@ -11,9 +12,11 @@ using UniShare.Data;
 namespace UniShare.Migrations
 {
     [DbContext(typeof(UniShareDbContext))]
-    partial class UniShareDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260518100024_RemoveUnusedReportNavProperties")]
+    partial class RemoveUnusedReportNavProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,9 +79,6 @@ namespace UniShare.Migrations
 
                     b.Property<string>("Destination")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DisputeResolution")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DriverId")

@@ -349,5 +349,68 @@ namespace UniShare.Controllers
             return RedirectToAction("MySentRequests");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ReportRide(int rideId, string reason)
+        {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+            var ride = await _context.Rides.FindAsync(rideId);
+            if (ride == null) return NotFound();
+
+            ride.RideStatus = "Disputed";
+
+            await _context.Reports.AddAsync(new Report
+            {
+                RelatedRideId = rideId,
+                SubjectUserId = ride.DriverId,
+                ReporterUserId = CurrentUserId,
+                ReportReason = reason,
+                ReportStatus = "Pending",
+                Priority = "High",
+                CreatedAt = DateTime.Now
+            });
+
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Ride reported! Admin will review the dispute.";
+            return RedirectToAction("MySentRequests");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReportPassenger(int requestId, string reason)
+        {
+            if (IsUserSuspended())
+            {
+                TempData["Error"] = "Your account is SUSPENDED. You cannot use this feature.";
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+            var req = await _context.RideRequests
+                .Include(r => r.Ride)
+                .FirstOrDefaultAsync(r => r.RequestId == requestId);
+
+            if (req == null || req.Ride == null) return NotFound();
+
+            req.Ride.RideStatus = "Disputed";
+
+            await _context.Reports.AddAsync(new Report
+            {
+                RelatedRideId = req.RideId,
+                ReporterUserId = CurrentUserId,
+                SubjectUserId = req.PassengerId,
+                ReportReason = reason,
+                ReportStatus = "Pending",
+                Priority = "High",
+                CreatedAt = DateTime.Now
+            });
+
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Passenger reported to admin.";
+            return RedirectToAction("AllRequestsReceived");
+        }
+
     }
 }

@@ -22,6 +22,8 @@ namespace UniShare.Models
 
         public string RideStatus { get; set; }
 
+        public string? DisputeResolution { get; set; }
+
         // Navigation 
         public User Driver { get; set; }
 

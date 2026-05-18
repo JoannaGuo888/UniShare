@@ -17,6 +17,7 @@
             <th>Driver</th>
             <th>Route</th>
             <th>Status</th>
+            <th>Dispute Resolution</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -26,7 +27,42 @@
             <td>@r.RideId</td>
             <td>@r.Driver.UserName</td>
             <td>@r.StartLocation → @r.Destination</td>
-            <td>@r.RideStatus</td>
+            <td>
+                @if (r.RideStatus == "Disputed")
+                {
+                    <span class="badge bg-danger">⚠ DISPUTED</span>
+                }
+                else if (r.RideStatus == "Active")
+                {
+                    <span class="badge bg-primary">Active</span>
+                }
+                else if (r.RideStatus == "Upcoming")
+                {
+                    <span class="badge bg-success">Upcoming</span>
+                }
+                else if (r.RideStatus == "Completed")
+                {
+                    <span class="badge bg-secondary">Completed</span>
+                }
+                else
+                {
+                    @r.RideStatus
+                }
+            </td>
+            <td>
+                @if (r.RideStatus == "Disputed")
+                {
+                    <span class="badge bg-warning">Awaiting Resolution</span>
+                }
+                else if (r.RideStatus == "DisputeResolved" && !string.IsNullOrEmpty(r.DisputeResolution))
+                {
+                    <span class="badge bg-success">@r.DisputeResolution</span>
+                }
+                else
+                {
+                    <span>-</span>
+                }
+            </td>
             <td><a asp-action="RideDetails" asp-route-id="@r.RideId" class="btn btn-sm btn-info">View Details</a></td>
         </tr>
     }

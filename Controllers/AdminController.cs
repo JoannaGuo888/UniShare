@@ -40,6 +40,7 @@ namespace UniShare.Controllers
                 ViewBag.OnlineUsers = await _context.Users.CountAsync(u => u.AccountStatus == "Active");
                 ViewBag.ActiveRides = await _context.Rides.CountAsync(r => r.RideStatus == "Active");
                 ViewBag.TodayReports = await _context.Reports.CountAsync(r => r.CreatedAt.Date == DateTime.Today);
+                ViewBag.DisputedRides = await _context.Rides.CountAsync(r => r.RideStatus == "Disputed");
             }
             catch
             {
@@ -145,6 +146,11 @@ namespace UniShare.Controllers
             {
                 return NotFound();
             }
+
+            // Link report to this ride
+            var reports = await _context.Reports.Where(r => r.RelatedRideId == id).ToListAsync();
+            ViewBag.DisputeReports = reports;
+            ViewBag.DbContext = _context;
             return View(ride);
         }
 
@@ -163,9 +169,15 @@ namespace UniShare.Controllers
             }
             ride.RideStatus = "DisputeResolved";
 
+            ride.DisputeResolution = resolution;
+
             if (resolution == "Flag Driver for Review")
             {
                 TempData["FlaggedDriver"] = "Yes";
+            }
+            if (resolution == "Flag Passenger for Review")
+            {
+                TempData["FlaggedPassenger"] = "Yes";
             }
 
             await _context.systemAuditLogs.AddAsync(new SystemAuditLog

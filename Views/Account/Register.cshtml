@@ -4,10 +4,6 @@
 }
 
 <h1>Create Account</h1>
-@if (TempData["Error"] != null)
-{
-    <div class="text-danger mb-2">@TempData["Error"]</div>
-}
 
 <form method="post">
     <label asp-for="UserName" class="form-label">Name</label>

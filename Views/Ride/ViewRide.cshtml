@@ -4,10 +4,6 @@
     ViewData["Title"] = "ViewRide";
 }
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
 @if (TempData["MailTo"] != null)
 {
     <a href="mailto:@TempData["MailTo"]?subject=@TempData["MailSubject"]&body=@TempData["MailBody"]"

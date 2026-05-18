@@ -27,7 +27,24 @@
             <td>@u.UserName</td>
             <td>@u.Email</td>
             <td>@u.Role</td>
-            <td>@u.AccountStatus</td>
+            <td>
+                @if (u.AccountStatus == "Active")
+                {
+                    <span class="badge bg-success">Active</span>
+                }
+                else if (u.AccountStatus == "Suspended")
+                {
+                    <span class="badge bg-warning text-dark">Suspended</span>
+                }
+                else if (u.AccountStatus == "Banned")
+                {
+                    <span class="badge bg-dark">Banned</span>
+                }
+                else
+                {
+                    @u.AccountStatus
+                }
+            </td>
             <td>@u.JoinDate.ToString("dd/MM/yyyy")</td>
             <td><a asp-action="EditUserStatus" asp-route-id="@u.UserId" class="btn btn-sm btn-warning">Edit Status</a></td>
         </tr>

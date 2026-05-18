@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniShare.Data;
 
@@ -11,9 +12,11 @@ using UniShare.Data;
 namespace UniShare.Migrations
 {
     [DbContext(typeof(UniShareDbContext))]
-    partial class UniShareDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260518092132_reporterUserAndReportedUser")]
+    partial class reporterUserAndReportedUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,14 +51,24 @@ namespace UniShare.Migrations
                     b.Property<int>("ReporterUserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ReporterUserUserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SubjectUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SubjectUserUserId")
                         .HasColumnType("int");
 
                     b.HasKey("ReportId");
 
                     b.HasIndex("ReporterUserId");
 
+                    b.HasIndex("ReporterUserUserId");
+
                     b.HasIndex("SubjectUserId");
+
+                    b.HasIndex("SubjectUserUserId");
 
                     b.ToTable("Reports");
                 });
@@ -76,9 +89,6 @@ namespace UniShare.Migrations
 
                     b.Property<string>("Destination")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DisputeResolution")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DriverId")
@@ -216,11 +226,23 @@ namespace UniShare.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("UniShare.Models.User", "ReporterUser")
+                        .WithMany()
+                        .HasForeignKey("ReporterUserUserId");
+
                     b.HasOne("UniShare.Models.User", null)
                         .WithMany()
                         .HasForeignKey("SubjectUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("UniShare.Models.User", "SubjectUser")
+                        .WithMany()
+                        .HasForeignKey("SubjectUserUserId");
+
+                    b.Navigation("ReporterUser");
+
+                    b.Navigation("SubjectUser");
                 });
 
             modelBuilder.Entity("UniShare.Models.Ride", b =>
