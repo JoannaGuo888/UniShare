@@ -33,6 +33,8 @@
         <p>Ride: @item.Ride.StartLocation → @item.Ride.Destination</p>
         <p>Date: @item.Ride.RideDate.ToString("dd/MM/yyyy")</p>
         <p>Time: @item.Ride.RideTime</p>
+        <p><strong>Driver Name:</strong> @item.Driver.UserName</p>
+        <p><strong>Driver Contact:</strong> @item.Driver.PhoneNumber</p>
         <p>Status: <span class="text-success">@item.RequestStatus</span></p>
         <a href="mailto:@item.Driver.Email" class="btn btn-info btn-sm">Message Driver</a>
         <small class="text-muted">Contact driver to cancel</small>

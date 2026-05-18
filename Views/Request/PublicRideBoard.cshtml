@@ -26,7 +26,7 @@
         <input name="to" class="form-control" placeholder="Destination" value="@ViewBag.SearchTo">
     </div>
     <div class="col-auto">
-        <input name="date" type="date" class="form-control" value="@ViewBag.SearchDate">
+        <input name="date" type="date" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-dd")" value="@ViewBag.SearchDate">
     </div>
     <div class="col-auto">
         <button class="btn btn-primary">Search / Filter</button>

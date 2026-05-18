@@ -238,7 +238,7 @@ namespace UniShare.Controllers
 
             TempData["Success"] = "Ride and all related requests were deleted successfully. Passengers have been notified";
 
-            return RedirectToAction("DriverCalendar");
+            return RedirectToAction("RidesByDate", new {date = ride.RideDate});
         }
 
         // Start Ride

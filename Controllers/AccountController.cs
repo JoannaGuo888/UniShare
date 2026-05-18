@@ -32,6 +32,7 @@ namespace UniShare.Controllers
 
             user.PasswordHash = ComputeSha256Hash(user.PasswordHash);
             user.AccountStatus = "Active";
+            user.JoinDate = DateTime.Now;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             TempData["Success"] = "Account created successfully! Please login.";
