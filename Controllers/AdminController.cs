@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using UniShare.Data;
 using UniShare.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace UniShare.Controllers
 {
@@ -198,50 +199,28 @@ namespace UniShare.Controllers
         }
 
         // Handle Reports & Flags
-        public async Task<IActionResult> ReportsFlags()
+        public async Task<IActionResult> ReportsFlags(string search = "")
         {
             if (!IsAdmin())
             {
                 return NoAccess();
             }
+            var reports = _context.Reports.AsQueryable();
+            if (!string.IsNullOrEmpty(search))
+            {
+                reports = reports.Where(r =>
+                    r.ReportId.ToString().Contains(search) ||
+                    r.RelatedRideId.ToString().Contains(search) ||
+                    r.ReportReason.Contains(search)
+                );
+            }
 
-            var reports = await _context.Reports.OrderBy(r => r.Priority == "Low" ? 3 : r.Priority == "Normal" ? 2 : 1).ToListAsync();
-            return View(reports);
+            var sortedReports = await reports.OrderBy(r => r.ReportStatus == "Pending" ? 0 : 1).ToListAsync();
+            ViewBag.Search = search;
+            return View(sortedReports);
+
         }
 
-        public async Task<IActionResult> TakeReportAction(int reportId, string action)
-        {
-            if (!IsAdmin())
-            {
-                return NoAccess();
-            }
-
-            var report = await _context.Reports.FindAsync(reportId);
-            if (report == null)
-            {
-                return NotFound();
-            }
-            report.ReportStatus = "Resolved";
-
-            if (action == "Suspend Subject")
-            {
-                var user = await _context.Users.FindAsync(report.SubjectUserId);
-                user.AccountStatus = "Suspended";
-            }
-
-            await _context.systemAuditLogs.AddAsync(new SystemAuditLog
-            {
-                AdminUserId = HttpContext.Session.GetInt32("UserId") ?? 0,
-                ActionTaken = $"Report action: {action}",
-                AffectedEntity = $"Report {reportId}"
-            });
-
-            await _context.SaveChangesAsync();
-            TempData["Success"] = "Report handled successfully.";
-            return RedirectToAction("ReportsFlags");
-
-
-        }
 
     }
 }

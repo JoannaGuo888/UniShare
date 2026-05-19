@@ -5,12 +5,19 @@
 
 <h1>Reports & Flags</h1>
 
+<form method="get" class="mb-3">
+    <input name="search" class="form-control w-50" placeholder="Search report ID / ride ID / reason" value="@ViewBag.Search">
+    <button class="btn btn-primary mt-2">Search</button>
+</form>
+
 @foreach (var r in Model)
 {
-    <div class="card p-3 mb-3">
+    <div class="card p-3 mb-3 @(r.ReportStatus == "Resolved" ? "bg-light text-muted" : "")">
         <h5>Priority: @r.Priority</h5>
-        <p>Reason: @r.ReportReason</p>
-        <p>Status: @r.ReportStatus</p>
-        <a asp-action="TakeReportAction" asp-route-reportId="@r.ReportId" class="btn btn-warning">Take Action</a>
+        <p><strong>Report ID:</strong> @r.ReportId</p>
+        <p><strong>Ride ID:</strong> @r.RelatedRideId</p>
+        <p><strong>Reason:</strong> @r.ReportReason</p>
+        <p><strong>Status:</strong> @r.ReportStatus</p>
+        <p><strong>Time:</strong> @r.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
     </div>
 }
