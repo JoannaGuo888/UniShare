@@ -1,4 +1,5 @@
-﻿@model UniShare.Models.Ride
+﻿@using Microsoft.EntityFrameworkCore
+@model UniShare.Models.Ride
 @{
     ViewData["Title"] = "RideDetails";
     var disputeReports = ViewBag.DisputeReports as List<UniShare.Models.Report>;
@@ -27,6 +28,46 @@
     <p><strong>Available Seats:</strong> @Model.AvailableSeats</p>
     <p><strong>Cost per Seat:</strong> €@Model.CostPerSeat</p>
     <p><strong>Status:</strong> @Model.RideStatus</p>
+</div>
+
+<button class="btn btn-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#passengerList">
+    👥 View All Passengers for This Ride
+</button>
+<div class="collapse card p-4 mb-3" id="passengerList">
+    <h3 class="mb-3">📋 All Passengers on This Ride</h3>
+    @{
+        // Load all requests for this ride (passengers)
+        var allRequests = _context.RideRequests
+        .Where(req => req.RideId == Model.RideId )
+        .Include(req => req.Passenger)
+        .ToList();
+    }
+    @if (allRequests.Any())
+    {
+        foreach (var req in allRequests)
+        {
+            <div class="border p-3 mb-2 rounded">
+                <h5>Passenger (Request ID: @req.RequestId)</h5>
+                @if (req.Passenger != null)
+                {
+                    <p><strong>Name:</strong> @req.Passenger.UserName</p>
+                    <p><strong>Email:</strong> @req.Passenger.Email</p>
+                    <p><strong>User ID:</strong> @req.PassengerId</p>
+                    <p><strong>Role:</strong> @req.Passenger.Role</p>
+                }
+                else
+                {
+                    <p>Passenger not found</p>
+                }
+                <p><strong>Request Status:</strong> @req.RequestStatus</p>
+                <p><strong>Message:</strong> @req.Message</p>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No passengers have requested or joined this ride yet.</p>
+    }
 </div>
 
 
