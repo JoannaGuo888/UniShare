@@ -71,57 +71,101 @@
 </div>
 
 
-@if (Model.DisputeResolution != null && disputeReports != null && disputeReports.Any())
+@if (disputeReports != null && disputeReports.Any())
 {
     <div class="card p-4 mb-3 border-danger">
         <h3 class="text-danger">📞 All Reports for This Ride</h3>
+        @{
+            var sortedReports = disputeReports.OrderBy(x => x.ReportStatus == "Resolved" ? 1 : 0).ToList();
+        }
+        @foreach (var report in sortedReports)
+        {
+            var reporter = _context.Users.FirstOrDefault(u => u.UserId == report.ReporterUserId);
+            var subject = _context.Users.FirstOrDefault(u => u.UserId == report.SubjectUserId);
 
-    @foreach (var report in disputeReports)
-    {
-        
-        var reporter = _context.Users.FirstOrDefault(u => u.UserId == report.ReporterUserId);
-        var subject = _context.Users.FirstOrDefault(u => u.UserId == report.SubjectUserId);
-        
-
-        <div class="border p-3 mb-2 rounded">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>👤 Reported By</h5>
-                    @if (reporter != null)
-                    {
-                        <p><strong>Name:</strong> @reporter.UserName</p>
-                        <p><strong>Email:</strong> @reporter.Email</p>
-                        <p><strong>ID:</strong> @report.ReporterUserId</p>
-                        <p><strong>Role:</strong> @reporter.Role</p>
-                        }
-                    else
-                    {
-                        <p>User not found (ID: @report.ReporterUserId)</p>
-                    }
+            <!-- RESOLVED = GRAY & MUTED -->
+            @if (report.ReportStatus == "Resolved")
+            {
+                <div class="border p-3 mb-2 rounded bg-light text-muted">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>👤 Reported By</h5>
+                            @if (reporter != null)
+                            {
+                                <p><strong>Name:</strong> @reporter.UserName</p>
+                                <p><strong>Email:</strong> @reporter.Email</p>
+                                <p><strong>ID:</strong> @report.ReporterUserId</p>
+                                <p><strong>Role:</strong> @reporter.Role</p>
+                            }
+                            else
+                            {
+                                <p>User not found</p>
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <h5>👤 Reported User</h5>
+                            @if (subject != null)
+                            {
+                                <p><strong>Name:</strong> @subject.UserName</p>
+                                <p><strong>Email:</strong> @subject.Email</p>
+                                <p><strong>ID:</strong> @report.SubjectUserId</p>
+                                <p><strong>Role:</strong> @subject.Role</p>
+                            }
+                            else
+                            {
+                                <p>User not found</p>
+                            }
+                        </div>
+                    </div>
+                    <p><strong>Reason:</strong><br>@report.ReportReason</p>
+                    <p><strong>Time:</strong> @report.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p><strong>Priority:</strong> @report.Priority</p>
+                    <p class="mt-1 mb-0"><strong>✅ RESOLVED</strong></p>
                 </div>
-                <div class="col-md-6">
-                    <h5>👤 Reported User</h5>
-                    @if (subject != null)
-                    {
-                        <p><strong>Name:</strong> @subject.UserName</p>
-                        <p><strong>Email:</strong> @subject.Email</p>
-                        <p><strong>ID:</strong> @report.SubjectUserId</p>
-                        <p><strong>Role:</strong> @subject.Role</p>
-                        }
-                    else
-                    {
-                        <p>User not found (ID: @report.SubjectUserId)</p>
-                    }
+            }
+            else
+            {
+                <!-- PENDING = NORMAL HIGHLIGHTED -->
+                <div class="border p-3 mb-2 rounded">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>👤 Reported By</h5>
+                            @if (reporter != null)
+                            {
+                                <p><strong>Name:</strong> @reporter.UserName</p>
+                                <p><strong>Email:</strong> @reporter.Email</p>
+                                <p><strong>ID:</strong> @report.ReporterUserId</p>
+                                <p><strong>Role:</strong> @reporter.Role</p>
+                            }
+                            else
+                            {
+                                <p>User not found</p>
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <h5>👤 Reported User</h5>
+                            @if (subject != null)
+                            {
+                                <p><strong>Name:</strong> @subject.UserName</p>
+                                <p><strong>Email:</strong> @subject.Email</p>
+                                <p><strong>ID:</strong> @report.SubjectUserId</p>
+                                <p><strong>Role:</strong> @subject.Role</p>
+                            }
+                            else
+                            {
+                                <p>User not found</p>
+                            }
+                        </div>
+                    </div>
+                    <p><strong>Reason:</strong><br>@report.ReportReason</p>
+                    <p><strong>Time:</strong> @report.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p><strong>Priority:</strong> @report.Priority</p>
+                    <p class="mt-1 mb-0 text-warning"><strong>⏳ PENDING REVIEW</strong></p>
                 </div>
-            </div>
-            <p><strong>Reason:</strong><br>@report.ReportReason</p>
-            <p><strong>Time:</strong> @report.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
-            <p><strong>Priority:</strong> @report.Priority</p>
-        </div>
-    }    
+            }
+        }
     </div>
 }
-
 @if(Model.RideStatus == "Disputed")
 {
     <form asp-action="ResolveDispute" method="post" class="card p-3">

@@ -56,6 +56,15 @@ namespace UniShare.Controllers
             await _context.SaveChangesAsync();
         }
 
+        private string GetPriority(string reason)
+        {
+            if (reason.Contains("No-show") || reason.Contains("Rude") || reason.Contains("Unsafe"))
+                return "High";
+            if (reason.Contains("Late") || reason.Contains("Communication") || reason.Contains("Changed plans"))
+                return "Normal";
+            return "Low";
+        }
+
         // Driver: All Requests Received
         public async Task<IActionResult> AllRequestsReceived()
         {
@@ -350,7 +359,7 @@ namespace UniShare.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ReportRide(int rideId, string reason)
+        public async Task<IActionResult> ReportRide(int rideId, string reportReason, string customReason)
         {
             if (IsUserSuspended())
             {
@@ -361,6 +370,12 @@ namespace UniShare.Controllers
             var ride = await _context.Rides.FindAsync(rideId);
             if (ride == null) return NotFound();
 
+            string finalReason = string.IsNullOrEmpty(customReason)
+                ? reportReason
+                : $"Other: {customReason}";
+
+            string priority = GetPriority(reportReason);
+
             ride.RideStatus = "Disputed";
 
             await _context.Reports.AddAsync(new Report
@@ -368,9 +383,9 @@ namespace UniShare.Controllers
                 RelatedRideId = rideId,
                 SubjectUserId = ride.DriverId,
                 ReporterUserId = CurrentUserId,
-                ReportReason = reason,
+                ReportReason = finalReason,
                 ReportStatus = "Pending",
-                Priority = "High",
+                Priority = priority,
                 CreatedAt = DateTime.Now
             });
 
@@ -380,7 +395,7 @@ namespace UniShare.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ReportPassenger(int requestId, string reason)
+        public async Task<IActionResult> ReportPassenger(int requestId, string reportReason, string customReason)
         {
             if (IsUserSuspended())
             {
@@ -392,7 +407,16 @@ namespace UniShare.Controllers
                 .Include(r => r.Ride)
                 .FirstOrDefaultAsync(r => r.RequestId == requestId);
 
-            if (req == null || req.Ride == null) return NotFound();
+            if (req == null || req.Ride == null) 
+            {
+                return NotFound();
+            }
+
+            string finalReason = string.IsNullOrEmpty(customReason)
+                ? reportReason
+                : $"Other: {customReason}";
+
+            string priority = GetPriority(reportReason);
 
             req.Ride.RideStatus = "Disputed";
 
@@ -401,9 +425,9 @@ namespace UniShare.Controllers
                 RelatedRideId = req.RideId,
                 ReporterUserId = CurrentUserId,
                 SubjectUserId = req.PassengerId,
-                ReportReason = reason,
+                ReportReason = finalReason,
                 ReportStatus = "Pending",
-                Priority = "High",
+                Priority = priority,
                 CreatedAt = DateTime.Now
             });
 

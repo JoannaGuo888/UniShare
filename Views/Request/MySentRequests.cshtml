@@ -34,9 +34,22 @@
         <p>Status: <span class="text-success">@item.RequestStatus</span></p>
         <a href="mailto:@item.Driver.Email" class="btn btn-info btn-sm">Message Driver</a>
         <small class="text-muted">Contact driver to cancel</small>
-        <form asp-action="ReportRide" asp-controller="Request" method="post" class="mt-2" onsubmit="return confirm('Are you sure you want to submit this report?');">
+        <form asp-action="ReportRide" asp-controller="Request" method="post" class="mt-2" onsubmit="return confirm('Submit this report?');">
             <input type="hidden" name="rideId" value="@item.RideId" />
-            <textarea name="reason" class="form-control form-control-sm mb-1 bg-light text-muted" placeholder="Describe issue..." required></textarea>
+
+            <select name="reportReason" class="form-select form-select-sm mb-1" required>
+                <option value="">Select a reason</option>
+                <option value="No-show / Didn’t arrive">No-show / Didn’t arrive </option>
+                <option value="Rude/aggressive behavior">Rude/aggressive behavior </option>
+                <option value="Unsafe/inappropriate behavior">Unsafe/inappropriate behavior </option>
+                <option value="Late without notice">Late without notice </option>
+                <option value="Poor communication">Poor communication </option>
+                <option value="Changed plans last minute">Changed plans last minute </option>
+                <option value="Uncomfortable experience">Uncomfortable experience </option>
+                <option value="Other">Other (describe below)</option>
+            </select>
+
+            <textarea name="customReason" class="form-control form-control-sm mb-1" placeholder="Only type here if you selected 'Other'"></textarea>
             <button class="btn btn-danger btn-sm w-100">Report This Ride</button>
         </form>
     </div>

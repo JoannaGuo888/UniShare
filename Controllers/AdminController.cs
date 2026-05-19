@@ -56,7 +56,7 @@ namespace UniShare.Controllers
             {
                 return NoAccess();
             }
-            var users = _context.Users.AsQueryable();
+            var users = _context.Users.Where(u=>u.Role == "Driver"|| u.Role == "Passenger").AsQueryable();
             if (!string.IsNullOrEmpty(search))
             {
                 users = users.Where(u => u.UserName.Contains(search) || u.Email.Contains(search));
@@ -171,6 +171,11 @@ namespace UniShare.Controllers
 
             ride.DisputeResolution = resolution;
 
+            var allRideReports = await _context.Reports.Where(r => r.RelatedRideId == rideId).ToListAsync();
+            foreach (var rp in allRideReports)
+            {
+                rp.ReportStatus = "Resolved";
+            }
             if (resolution == "Flag Driver for Review")
             {
                 TempData["FlaggedDriver"] = "Yes";
@@ -226,13 +231,13 @@ namespace UniShare.Controllers
 
             await _context.systemAuditLogs.AddAsync(new SystemAuditLog
             {
-                AdminUserId = HttpContext.Session.GetInt32("UderId") ?? 0,
+                AdminUserId = HttpContext.Session.GetInt32("UserId") ?? 0,
                 ActionTaken = $"Report action: {action}",
                 AffectedEntity = $"Report {reportId}"
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Report handeled successfully.";
+            TempData["Success"] = "Report handled successfully.";
             return RedirectToAction("ReportsFlags");
 
 

@@ -45,9 +45,22 @@
 
         <a href="mailto:@item.Passenger.Email" class="btn btn-info btn-sm">Message Sender</a>        
         <a asp-action="CancelAcceptedRequest" asp-route-id="@item.RequestId" class="btn btn-warning btn-sm">Cancel</a>
-        <form asp-action="ReportPassenger" asp-controller="Request" method="post" class="mt-2" onsubmit="return confirm('Are you sure you want to submit this report?');">
+        <form asp-action="ReportPassenger" asp-controller="Request" method="post" class="mt-2" onsubmit="return confirm('Submit this report?');">
             <input type="hidden" name="requestId" value="@item.RequestId" />
-            <textarea name="reason" class="form-control form-control-sm mb-1 bg-light text-muted" placeholder="Report passenger..." required></textarea>
+
+            <select name="reportReason" class="form-select form-select-sm mb-1" required>
+                <option value="">Select a reason</option>
+                <option value="No-show / Didn’t arrive">No-show / Didn’t arrive </option>
+                <option value="Rude/aggressive behavior">Rude/aggressive behavior </option>
+                <option value="Unsafe/inappropriate behavior">Unsafe/inappropriate behavior </option>
+                <option value="Late without notice">Late without notice </option>
+                <option value="Poor communication">Poor communication </option>
+                <option value="Changed plans last minute">Changed plans last minute </option>
+                <option value="Uncomfortable experience">Uncomfortable experience </option>
+                <option value="Other">Other (describe below)</option>
+            </select>
+
+            <textarea name="customReason" class="form-control form-control-sm mb-1" placeholder="Only type here if you selected 'Other'"></textarea>
             <button class="btn btn-danger btn-sm w-100">Report This Passenger</button>
         </form>
     </div>
