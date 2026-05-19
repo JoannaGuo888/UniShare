@@ -1,0 +1,33 @@
+﻿@model UniShare.Models.User
+@{
+    ViewData["Title"] = "Contact Admin";
+}
+
+<h1 class="mb-4">Contact System Administrator</h1>
+
+<div class="card p-5" ">
+    <h4 class="mb-3">Official Contact Information</h4>
+    <br />
+    @if(Model != null)
+    {
+        <p class="fs-5 mb-2"><strong>Admin Name:</strong> @Model.UserName</p>
+        <p class="fs-5 mb-2"><strong>Admin Email:</strong> @Model.Email</p>
+        <p class="fs-5 mb-2"><strong>Admin Phone:</strong> @Model.PhoneNumber</p>
+    }
+    else
+    {
+        <p class="text-danger">No administrator information available.</p>
+    }
+    <br />
+    <p class="text-muted">
+        For ride disputes, account issues, service suggestions or any enquiries,
+        please reach out via email or phone during working hours.
+    </p>
+
+    @if (Model != null)
+    {
+        <a href="mailto:@Model.Email" class="btn btn-primary mt-3">
+            Send Email Directly
+        </a>
+    }
+</div>
