@@ -221,6 +221,17 @@ namespace UniShare.Controllers
 
         }
 
+        public async Task<IActionResult> AuditLogs()
+        {
+            if (!IsAdmin())
+            {
+                return NoAccess();
+            }
+
+            var logs = await _context.systemAuditLogs.OrderByDescending(l => l.ActionTime).ToListAsync();
+            return View(logs);
+        }
+
 
     }
 }

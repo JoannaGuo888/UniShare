@@ -10,6 +10,6 @@ namespace UniShare.Models
         public int AdminUserId { get; set; }
         public string ActionTaken { get; set; }
         public string AffectedEntity { get; set; }
-        public DateTime ActionTime { get; set; }
+        public DateTime ActionTime { get; set; } = DateTime.Now;
     }
 }

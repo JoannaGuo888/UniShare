@@ -1,0 +1,40 @@
+﻿@model List<UniShare.Models.SystemAuditLog>
+@{
+    ViewData["Title"] = "System Audit Logs";
+}
+
+<h1>System Audit Logs</h1>
+<p class="text-muted">Track all admin actions (user status changes, dispute resolutions)</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No audit logs found yet.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Log ID</th>
+                <th>Admin ID</th>
+                <th>Action Taken</th>
+                <th>Affected Entity</th>
+                <th>Date & Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model)
+            {
+                <tr>
+                    <td>@log.LogId</td>
+                    <td>@log.AdminUserId</td>
+                    <td>@log.ActionTaken</td>
+                    <td>@log.AffectedEntity</td>
+                    <td>@log.ActionTime.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-action="SystemOverview" class="btn btn-secondary">Back to Admin Dashboard</a>
