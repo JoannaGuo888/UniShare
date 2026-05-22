@@ -296,6 +296,16 @@ namespace UniShare.Controllers
                 return RedirectToAction("PublicRideBoard");
             }
 
+            bool alreadyHasRequest = await _context.RideRequests
+               .AnyAsync(r => r.PassengerId == CurrentUserId
+                   && r.RideId == rideId
+                   && (r.RequestStatus == "New" || r.RequestStatus == "Accepted"));
+
+            if (alreadyHasRequest)
+            {
+                TempData["Error"] = "You already have a pending or accepted request for this ride!";
+                return RedirectToAction("PublicRideBoard");
+            }
             // Create new request
             var newReq = new RideRequest
             {
