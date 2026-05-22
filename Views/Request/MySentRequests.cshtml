@@ -7,7 +7,7 @@
 
 <div style="max-width: 968px; margin: 2rem auto;">
 
-    <h3 style="color:green">Pending Requests</h3>
+    <h3 style="color:orange">Pending Requests</h3>
     @foreach (var item in Model.Where(r => r.RequestStatus == "New"))
     {
         <div class="border p-3 mb-2 rounded">
@@ -20,7 +20,7 @@
         </div>
     }
 
-    <h3 style="color:blue">Accepted Requests</h3>
+    <h3 style="color:green">Accepted Requests</h3>
     @foreach (var item in Model.Where(r => r.RequestStatus == "Accepted"))
     {
         <div class="border p-3 mb-2 rounded">
