@@ -82,6 +82,44 @@
         <a asp-action="PublicRideBoard" asp-controller="Request" class="btn btn-primary">Browse Rides</a>
         <a asp-action="MySentRequests" asp-controller="Request" class="btn btn-success">My Requests</a>
     </div>
+
+    <div class="card p-3 mb-3 " style="max-width: 768px; margin: 2rem auto;">
+        <h5 class="text-success">🚙 Your Upcoming Ride Requests</h5>
+        @{
+            var futureReqs = ViewBag.FutureRequests as List<UniShare.Models.RideRequest>;
+        }
+        @if (futureReqs != null && futureReqs.Any())
+        {
+            @foreach (var req in futureReqs)
+            {
+                <div class="border p-2 mb-2 rounded">
+                    <p class="mb-1"><strong>Route:</strong> @req.Ride.StartLocation → @req.Ride.Destination</p>
+                    <p class="mb-1"><strong>Date:</strong> @req.Ride.RideDate.ToString("dd/MM/yyyy")</p>
+                    <p class="mb-1"><strong>Time:</strong> @req.Ride.RideTime</p>
+                    <p class="mb-1"><strong>Driver:</strong> @req.Driver.UserName</p>
+                    <p class="mb-1">
+                        <strong>Request Status:</strong>
+                        @if (req.RequestStatus == "Accepted")
+                        {
+                            <span class="badge bg-success">Accepted</span>
+                        }
+                        else if (req.RequestStatus == "New")
+                        {
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        }
+                        else
+                        {
+                            <span>@req.RequestStatus</span>
+                        }
+                    </p>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted mb-0">No upcoming ride requests.</p>
+        }
+    </div>
 }
 @if (ViewBag.UserRole == "Admin")
 {

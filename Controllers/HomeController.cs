@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using UniShare.Data;
 using UniShare.Models;
 
@@ -30,6 +31,21 @@ namespace UniShare.Controllers
                              && r.RideDate.Date == DateTime.Now.Date
                              && (r.RideStatus == "Upcoming" || r.RideStatus == "Active"))
                     .OrderBy(r => r.RideTime)
+                    .ToList();
+            }
+
+            if (role == "Passenger")
+            {
+                int passengerId = HttpContext.Session.GetInt32("UserId") ?? 0;
+                ViewBag.FutureRequests = _context.RideRequests
+                    .Include(r => r.Ride)
+                    .Include(r => r.Driver)
+                    .Where(r => r.PassengerId == passengerId
+                             && r.Ride != null
+                             && r.Ride.RideDate.Date >= DateTime.Now.Date
+                             && r.Ride.RideStatus == "Upcoming")
+                    .OrderBy(r => r.Ride.RideDate)
+                    .ThenBy(r => r.Ride.RideTime)
                     .ToList();
             }
             return View();
