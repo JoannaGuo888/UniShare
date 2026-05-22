@@ -53,7 +53,14 @@ namespace UniShare.Controllers
 
         public IActionResult DriverCalendar()
         {
-            ViewBag.DriverId = GetCurrentDriverId();
+            int driverId = GetCurrentDriverId();
+            ViewBag.UpcomingRideDates = _context.Rides
+               .Where(r => r.DriverId == driverId && r.RideStatus == "Upcoming")
+               .Select(r => r.RideDate.Date)
+               .Distinct()
+               .ToList();
+
+            ViewBag.DriverId = driverId;
             return View();
         }
 
