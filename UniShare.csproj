@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\images\UniShareBackground.png" />
+    <Content Remove="wwwroot\images\UniShareIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\UniShareBackground.png" />
+    <None Include="wwwroot\images\UniShareIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.26" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.26">
       <PrivateAssets>all</PrivateAssets>

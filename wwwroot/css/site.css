@@ -2,14 +2,41 @@ html {
   font-size: 14px;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+    .form-select.w-75,
+    textarea.w-75{
+        width: 100% !important;
+
+    }
+
+    .btn-danger.w-25{
+        width: 50% !important;
+    }
 }
 
+
+@media (max-width: 1280px) {
+    html {
+        font-size: 15px;
+
+    }
+
+}
+
+@media (min-width: 1280px) {
+    html {
+        font-size: 16px ;
+    }
+}
+
+
+
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #657744 !important;
 }
 
 html {
@@ -18,5 +45,73 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-image: url("/images/UniShareBackground.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* fix image when scroll */
+    min-height: 100vh;
+}
+
+.app-icon {
+    display: inline-block;
+    width: 3em; /* icon size */
+    height: 3em;
+    background-image: url("/images/UniShareIcon.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 0; 
+    vertical-align: middle;
+}
+
+.brand-text {
+    font-size: 1em;
+    font-weight: 500;
+    color: #212529; 
+    line-height: 1.2;
+}
+
+.btn-primary {
+    background-color: #b2bd9b;
+    border-color: #b2bd9b;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.btn-primary:hover {
+    background-color: #71854b;
+    border-color: #71854b;
+}
+
+.btn-primary:active {
+    background-color: #657744;
+    border-color: #657744;
+}
+
+.btn-success {
+    background-color: #afaa6f;
+    border-color: #afaa6f;
+}
+
+.btn-success:hover {
+    background-color: #908d60;
+    border-color: #908d60;
+}
+
+.btn-success:active {
+    background-color: #878458;
+    border-color: #878458;
+}
+
+h1{
+    padding-top : 1em;
+    padding-bottom: 1em;
+    text-align: center;
+    color: #504e34;
+}
+
+p{
+    font-size: 18px;
 }

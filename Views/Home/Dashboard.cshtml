@@ -8,11 +8,11 @@
 
 <h1>Welcome, @ViewBag.UserName</h1>
 
-<p class="lead">Your Role: <strong>@ViewBag.UserRole</strong></p>
+<p class="lead" style="max-width: 768px; margin: 2rem auto;">Your Role: <strong>@ViewBag.UserRole</strong></p>
 
 @if(ViewBag.UserRole == "Driver")
 {
-    <div class="card p-3 mb-3">
+    <div class="card p-5" style="max-width: 768px; margin: 2rem auto;">
         <h4>Driver Dashboard</h4>
         <p>Manage your rides, calendar and incoming requests.</p>
         <a asp-action="DriverCalendar" asp-controller="Ride" class="btn btn-primary">Open Calendar</a>
@@ -21,7 +21,7 @@
 }
 @if (ViewBag.UserRole == "Passenger")
 {
-    <div class="card p-3 mb-3">
+    <div class="card p-5" style="max-width: 768px; margin: 2rem auto;">
         <h4>Passenger Dashboard</h4>
         <p>Find rides and manage your join requests.</p>
         <a asp-action="PublicRideBoard" asp-controller="Request" class="btn btn-primary">Browse Rides</a>
@@ -30,7 +30,7 @@
 }
 @if (ViewBag.UserRole == "Admin")
 {
-    <div class="card p-3 mb-3">
+    <div class="card p-5" style="max-width: 768px; margin: 2rem auto;">
         <h4>Admin Dashboard</h4>
         <p>Monitor system, users, rides and reports.</p>
         <a asp-action="SystemOverview" asp-controller="Admin" class="btn btn-primary">System Overview</a>

@@ -7,14 +7,18 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UniShare.styles.css" asp-append-version="true" />
-</head>
+@*     <link rel="icon" type="image/png" href="~/images/UniShareIcon.png">
+ *@</head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 @if (Context.Session.GetString("UserId") != null)
                 {
-                    <a class="navbar-brand" asp-controller="Home" asp-action="Dashboard">UniShare</a>
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Dashboard">
+                        <span class="app-icon"></span>
+                        <span class="brand-text">UniShare</span>
+                        </a>
                 }
                 else
                 {

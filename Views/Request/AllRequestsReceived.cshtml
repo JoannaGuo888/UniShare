@@ -48,7 +48,7 @@
         <form asp-action="ReportPassenger" asp-controller="Request" method="post" class="mt-2" onsubmit="return confirm('Submit this report?');">
             <input type="hidden" name="requestId" value="@item.RequestId" />
 
-            <select name="reportReason" class="form-select form-select-sm mb-1" required>
+            <select name="reportReason" class="form-select form-select-sm mb-2 mt-2 w-75" required>
                 <option value="">Select a reason</option>
                 <option value="No-show / Didn’t arrive">No-show / Didn’t arrive </option>
                 <option value="Rude/aggressive behavior">Rude/aggressive behavior </option>
@@ -60,8 +60,8 @@
                 <option value="Other">Other (describe below)</option>
             </select>
 
-            <textarea name="customReason" class="form-control form-control-sm mb-1" placeholder="Only type here if you selected 'Other'"></textarea>
-            <button class="btn btn-danger btn-sm w-100">Report This Passenger</button>
+            <textarea name="customReason" class="form-control form-control-sm mb-2 w-75" placeholder="Only type here if you selected 'Other'"></textarea>
+            <button class="btn btn-danger btn-sm w-25">Report This Passenger</button>
         </form>
     </div>
 }

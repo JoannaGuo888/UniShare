@@ -5,18 +5,19 @@
 }
 
 <h1>Login</h1>
-
-<form method="post">
-    <label asp-for="Email" class="form-label">Email</label>
-    <input type="email" name="email" required class="form-control mb-2" /><br />
-    <label asp-for="PasswordHash" class="form-label">Password</label>
-    <input type="password" name="password"  required class="form-control mb-2"><br />
-    <label class="form-label">Login as</label>
-    <select name="role" class="form-control mb-3" required>
-        <option value="Driver">Driver</option>
-        <option value="Passenger">Passenger</option>
-        <option value="Admin">Admin</option>
-    </select>
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+<div style="max-width: 450px; margin: 0 auto;">
+    <form method="post">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input type="email" name="email" required class="form-control mb-2" /><br />
+        <label asp-for="PasswordHash" class="form-label">Password</label>
+        <input type="password" name="password" required class="form-control mb-2"><br />
+        <label class="form-label">Login as</label>
+        <select name="role" class="form-control mb-3" required>
+            <option value="Driver">Driver</option>
+            <option value="Passenger">Passenger</option>
+            <option value="Admin">Admin</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
 
