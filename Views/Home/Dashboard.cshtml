@@ -18,7 +18,62 @@
         <a asp-action="DriverCalendar" asp-controller="Ride" class="btn btn-primary">Open Calendar</a>
         <a asp-action="AllRequestsReceived" asp-controller="Request" class="btn btn-success">View Requests</a>
     </div>
+    <div class="card p-3 mb-3" style="max-width: 768px; margin: 2rem auto;">
+        <h5>🚙 Today's Rides (Active + Upcoming)</h5>
+        @{
+            var todayRides = ViewBag.TodayRides as List<UniShare.Models.Ride>;
+        }
+        @if (todayRides != null && todayRides.Any())
+        {
+            @foreach (var ride in todayRides)
+            {
+                <div class="border p-2 mb-2 rounded">
+                    <p class="mb-1"><strong>Route:</strong> @ride.StartLocation → @ride.Destination</p>
+                    <p class="mb-1"><strong>Time:</strong> @ride.RideTime</p>
+                    <p class="mb-1">
+                        <strong>Status:</strong>
+                        @if (ride.RideStatus == "Active")
+                        {
+                            <span class="badge bg-primary">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Upcoming</span>
+                        }
+                    </p>
+                    @if (ride.RideStatus == "Upcoming")
+                    {
+                        DateTime scheduled = ride.RideDate.Add(ride.RideTime);
+                        DateTime now = DateTime.Now;
+
+                        if (now >= scheduled.AddMinutes(-30) && now <= scheduled.AddHours(2))
+                        {
+
+                            <a asp-action="StartRide" asp-controller = "Ride" asp-route-id="@ride.RideId" class="btn btn-warning btn-sm" onclick="return confirm('Start this ride?')">Ride Started</a>
+                        }
+                        else if (now < scheduled.AddMinutes(-30))
+                        {
+                            <p class="text-warning">
+                                🕒 Ride not ready yet. You can start 30 minutes before scheduled time.
+                            </p>
+                        }
+                    }
+                    @if (ride.RideStatus == "Active")
+                    {
+                        <a asp-action="FinishRide" asp-controller = "Ride"  asp-route-id="@ride.RideId" class="btn btn-success btn-sm">Ride Finished</a>
+                    }
+                </div>
+
+
+            }
+        }
+        else
+        {
+            <p class="text-muted mb-0">No active or upcoming rides today!</p>
+        }
+    </div>
 }
+
 @if (ViewBag.UserRole == "Passenger")
 {
     <div class="card p-5" style="max-width: 768px; margin: 2rem auto;">
