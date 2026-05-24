@@ -58,7 +58,7 @@ namespace UniShare.Controllers
         public async Task<IActionResult> Login(string email, string password, string role)
         {
             string hashed = ComputeSha256Hash(password);
-            var user = _context.Users.FirstOrDefault(u => u.Email == email && u.PasswordHash == hashed && u.Role == role );
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.PasswordHash == hashed && u.Role == role );
             if (user == null)
             {
                 TempData["Error"] = "Invalid username or password or role!"; // TempData to prevent form resubmission
@@ -127,7 +127,7 @@ namespace UniShare.Controllers
         }
 
         // Password Hashing
-        private string ComputeSha256Hash(string raw)
+        private string ComputeSha256Hash(string raw)  
         {
             using SHA256 sha = SHA256.Create();
             byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(raw));

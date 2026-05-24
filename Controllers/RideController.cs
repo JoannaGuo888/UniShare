@@ -34,7 +34,7 @@ namespace UniShare.Controllers
         }
 
         // Auto-Mark expired rides (only if 2 hours past time and still upcoming)
-        private async Task MarkExpiredRides()
+        private async Task MarkExpiredRides() 
         {
             // Get all rides that are upcoming and their date/time is in the past
             var upcomingRides = await _context.Rides.Where(r => r.RideStatus == "Upcoming").ToListAsync();

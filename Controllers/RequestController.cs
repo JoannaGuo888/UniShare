@@ -56,7 +56,7 @@ namespace UniShare.Controllers
             await _context.SaveChangesAsync();
         }
 
-        private string GetPriority(string reason)
+        private string GetPriority(string reason)  
         {
             if (reason.Contains("No-show") || reason.Contains("Rude") || reason.Contains("Unsafe"))
                 return "High";
@@ -226,7 +226,7 @@ namespace UniShare.Controllers
         }
 
         // Passenger: Public Ride Board
-        public async Task<IActionResult> PublicRideBoard(string? from, string? to, DateTime? date)
+        public async Task<IActionResult> PublicRideBoard(string from, string to, DateTime? date)
         {
             await MarkExpiredRides();
             var allRides =  _context.Rides.Include(r => r.Driver).Where(r => r.RideStatus == "Upcoming" && r.AvailableSeats > 0).AsQueryable();
