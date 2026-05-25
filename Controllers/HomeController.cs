@@ -28,7 +28,7 @@ namespace UniShare.Controllers
                 int driverId = HttpContext.Session.GetInt32("UserId") ?? 0;
                 ViewBag.TodayRides = _context.Rides
                     .Where(r => r.DriverId == driverId
-                             && r.RideDate.Date == DateTime.Now.Date
+                             && r.RideDate.Date == DateTime.UtcNow.AddHours(1).Date
                              && (r.RideStatus == "Upcoming" || r.RideStatus == "Active"))
                     .OrderBy(r => r.RideTime)
                     .ToList();
@@ -42,7 +42,7 @@ namespace UniShare.Controllers
                     .Include(r => r.Driver)
                     .Where(r => r.PassengerId == passengerId
                              && r.Ride != null
-                             && r.Ride.RideDate.Date >= DateTime.Now.Date
+                             && r.Ride.RideDate.Date >= DateTime.UtcNow.AddHours(1).Date
                              && r.Ride.RideStatus == "Upcoming")
                     .OrderBy(r => r.Ride.RideDate)
                     .ThenBy(r => r.Ride.RideTime)

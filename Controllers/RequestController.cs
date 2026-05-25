@@ -33,7 +33,7 @@ namespace UniShare.Controllers
         {
             // Get all rides that are upcoming and their date/time is in the past
             var upcomingRides = await _context.Rides.Where(r => r.RideStatus == "Upcoming").ToListAsync();
-            var expiredRides = upcomingRides.Where(r => r.RideDate.Add(r.RideTime).AddHours(2) < DateTime.Now);
+            var expiredRides = upcomingRides.Where(r => r.RideDate.Add(r.RideTime).AddHours(2) < DateTime.UtcNow.AddHours(1));
 
             foreach (var ride in expiredRides)
             {
@@ -158,7 +158,7 @@ namespace UniShare.Controllers
             }
             string rideFrom = "Unknown";
             string rideTo = "Unknown";
-            DateTime rideDate = DateTime.Now;
+            DateTime rideDate = DateTime.UtcNow.AddHours(1);
             TimeSpan rideTime = TimeSpan.Zero;
 
             if (req.Ride != null)
@@ -197,7 +197,7 @@ namespace UniShare.Controllers
         // 30 mins auto cancel (Admin System Logic)
         public async Task AutoCancelExpiredRequests()
         {
-            var expired = await _context.RideRequests.Include(r => r.Ride).Where(r => r.RequestStatus == "New" && DateTime.Now.Subtract(r.RequestCreatedTime).TotalMinutes > 30).ToListAsync();
+            var expired = await _context.RideRequests.Include(r => r.Ride).Where(r => r.RequestStatus == "New" && DateTime.UtcNow.AddHours(1).Subtract(r.RequestCreatedTime).TotalMinutes > 30).ToListAsync();
             foreach(var req in expired)
             {
                 req.RequestStatus = "CancelledByAdmin";
@@ -248,7 +248,7 @@ namespace UniShare.Controllers
 
             // Sort by time
             var availableRides = await allRides.ToListAsync();
-            var result = availableRides.Where(r => r.RideDate.Add(r.RideTime) > DateTime.Now).OrderBy(r => r.RideDate).ThenBy(r => r.RideTime).ToList();
+            var result = availableRides.Where(r => r.RideDate.Add(r.RideTime) > DateTime.UtcNow.AddHours(1)).OrderBy(r => r.RideDate).ThenBy(r => r.RideTime).ToList();
             ViewBag.SearchFrom = from;
             ViewBag.SearchTo = to;
             ViewBag.SearchDate = date;
@@ -314,7 +314,7 @@ namespace UniShare.Controllers
                 PassengerId = CurrentUserId,
                 Message = message,
                 RequestStatus = "New",
-                RequestCreatedTime = DateTime.Now
+                RequestCreatedTime = DateTime.UtcNow.AddHours(1)
 
             };
 
@@ -396,7 +396,7 @@ namespace UniShare.Controllers
                 ReportReason = finalReason,
                 ReportStatus = "Pending",
                 Priority = priority,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow.AddHours(1)
             });
 
             await _context.SaveChangesAsync();
@@ -438,7 +438,7 @@ namespace UniShare.Controllers
                 ReportReason = finalReason,
                 ReportStatus = "Pending",
                 Priority = priority,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow.AddHours(1)
             });
 
             await _context.SaveChangesAsync();

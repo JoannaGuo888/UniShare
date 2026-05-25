@@ -38,7 +38,7 @@ namespace UniShare.Controllers
         {
             // Get all rides that are upcoming and their date/time is in the past
             var upcomingRides = await _context.Rides.Where(r => r.RideStatus == "Upcoming").ToListAsync();
-            var expiredRides = upcomingRides.Where(r => r.RideDate.Add(r.RideTime).AddHours(2)< DateTime.Now);
+            var expiredRides = upcomingRides.Where(r => r.RideDate.Add(r.RideTime).AddHours(2)< DateTime.UtcNow.AddHours(1));
             
             foreach(var ride  in expiredRides)
             {
@@ -100,7 +100,7 @@ namespace UniShare.Controllers
             var lockDate = ride.RideDate;
 
             DateTime fullRideTime = lockDate + ride.RideTime;
-            if(fullRideTime <= DateTime.Now)
+            if(fullRideTime <= DateTime.UtcNow.AddHours(1))
             {
                 ModelState.AddModelError("RideTime", "Please select a future time only!");
                 return View(ride);
@@ -170,7 +170,7 @@ namespace UniShare.Controllers
                 return View(ride);
             }
             DateTime fullRideDateTime = ride.RideDate + ride.RideTime;
-            if(fullRideDateTime <= DateTime.Now)
+            if(fullRideDateTime <= DateTime.UtcNow.AddHours(1))
             {
                 ModelState.AddModelError("RideTime", "Please select a future time only!");
                 return View(ride);
@@ -290,7 +290,7 @@ namespace UniShare.Controllers
             }
             DateTime scheduledStart = ride.RideDate.Add(ride.RideTime);
             // Can't start before 30 mins of scheduled time
-            if(DateTime.Now < scheduledStart.AddMinutes(-30))
+            if(DateTime.UtcNow.AddHours(1) < scheduledStart.AddMinutes(-30))
             {
                 TempData["Error"] = $"You can only start this ride 30 minutes before its scheduled time {scheduledStart:HH:mm}.";
                 return RedirectToAction("ViewRide", new { id });

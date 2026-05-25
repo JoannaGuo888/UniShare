@@ -43,8 +43,8 @@
                     </p>
                     @if (ride.RideStatus == "Upcoming")
                     {
-                        DateTime scheduled = ride.RideDate.Add(ride.RideTime);
-                        DateTime now = DateTime.Now;
+                        DateTime scheduled = ride.RideDate.Date+ride.RideTime;
+                        DateTime now = DateTime.UtcNow.AddHours(1);
 
                         if (now >= scheduled.AddMinutes(-30) && now <= scheduled.AddHours(2))
                         {

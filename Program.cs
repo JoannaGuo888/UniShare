@@ -3,6 +3,7 @@ using UniShare.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddDbContext<UniShareDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
 
@@ -19,11 +20,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
 
 app.UseRouting();

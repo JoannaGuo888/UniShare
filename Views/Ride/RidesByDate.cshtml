@@ -46,10 +46,11 @@ else
 
             <a asp-action="ViewRide" asp-route-id="@ride.RideId" class="btn btn-light btn-sm">View / Edit</a>
 
+
             @if (ride.RideStatus == "Upcoming")
             {
-                DateTime scheduled = ride.RideDate.Add(ride.RideTime);
-                DateTime now = DateTime.Now;
+                DateTime scheduled = ride.RideDate.Date+ride.RideTime;
+                DateTime now = DateTime.UtcNow.AddHours(1);
 
                 if (now >= scheduled.AddMinutes(-30) && now <= scheduled.AddHours(2))
                 {
@@ -63,6 +64,7 @@ else
                     </p>
                 }
             }
+
             @if (ride.RideStatus == "Active")
             {
                 <a asp-action="FinishRide" asp-route-id="@ride.RideId" class="btn btn-success btn-sm">Ride Finished</a>
