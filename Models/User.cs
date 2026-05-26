@@ -17,8 +17,10 @@ namespace UniShare.Models
         [Required]
         [RegularExpression(@"^(Driver|Passenger|Admin)$")]
         public string Role { get; set; }
-        [Phone]
+        [Required]
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Phone number can only contain digits (0-9)")]
         public string PhoneNumber { get; set; }
+        [Required]
         public string HomeAddress { get; set; }
         [RegularExpression(@"^(Active|Suspended|Banned)$")]
 

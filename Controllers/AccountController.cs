@@ -41,6 +41,11 @@ namespace UniShare.Controllers
                 return View(user);
             }
 
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+
             user.PasswordHash = ComputeSha256Hash(user.PasswordHash);
             user.AccountStatus = "Active";
             user.JoinDate = DateTime.UtcNow.AddHours(1);

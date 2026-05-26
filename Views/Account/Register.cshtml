@@ -21,8 +21,11 @@
  *@    </select>
         <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
         <input asp-for="PhoneNumber" class="form-control mb-2" />
+        <div class="text-danger mb-2">
+            <span asp-validation-for="PhoneNumber"></span>
+        </div>        
         <label asp-for="HomeAddress" class="form-label">Address</label>
-        <input asp-for="HomeAddress" class="form-control mb-2">
+        <input asp-for="HomeAddress" required class="form-control mb-2">
         <button class="btn btn-success">Register</button>
     </form>
 
