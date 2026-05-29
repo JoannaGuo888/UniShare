@@ -19,24 +19,24 @@ namespace UniShare.Controllers
         }
 
 
-        public async Task AutoCancelExpiredRequests()
-        {
-            var expired = await _context.RideRequests.Include(r => r.Ride).Where(r => r.RequestStatus == "New" && DateTime.UtcNow.AddHours(1).Subtract(r.RequestCreatedTime).TotalMinutes > 30).ToListAsync();
-            foreach (var req in expired)
-            {
-                req.RequestStatus = "CancelledByAdmin";
-                // Release seat
-                if (req.Ride != null)
-                {
-                    req.Ride.AvailableSeats++;
-                }
-            }
-            await _context.SaveChangesAsync();
-        }
+        //private async Task AutoCancelExpiredRequests()
+        //{
+        //    var expired = await _context.RideRequests.Include(r => r.Ride).Where(r => r.RequestStatus == "New" && DateTime.UtcNow.AddHours(1).Subtract(r.RequestCreatedTime).TotalMinutes > 30).ToListAsync();
+        //    foreach (var req in expired)
+        //    {
+        //        req.RequestStatus = "CancelledByAdmin";
+        //        // Release seat
+        //        if (req.Ride != null)
+        //        {
+        //            req.Ride.AvailableSeats++;
+        //        }
+        //    }
+        //    await _context.SaveChangesAsync();
+        //}
 
         public async Task<IActionResult> Dashboard()
         {
-            await AutoCancelExpiredRequests();
+            //await AutoCancelExpiredRequests();
             var role = HttpContext.Session.GetString("UserRole");
             ViewBag.UserRole = role;
             ViewBag.UserName = HttpContext.Session.GetString("UserName");

@@ -195,7 +195,7 @@ namespace UniShare.Controllers
         
 
         // 30 mins auto cancel (Admin System Logic)
-        public async Task AutoCancelExpiredRequests()
+        private async Task AutoCancelExpiredRequests()
         {
             var expired = await _context.RideRequests.Include(r => r.Ride).Where(r => r.RequestStatus == "New" && DateTime.UtcNow.AddHours(1).Subtract(r.RequestCreatedTime).TotalMinutes > 30).ToListAsync();
             foreach(var req in expired)
@@ -228,7 +228,7 @@ namespace UniShare.Controllers
         // Passenger: Public Ride Board
         public async Task<IActionResult> PublicRideBoard(string from, string to, DateTime? date)
         {
-            await AutoCancelExpiredRequests();
+            //await AutoCancelExpiredRequests();
             await MarkExpiredRides();
             var allRides =  _context.Rides.Include(r => r.Driver).Where(r => r.RideStatus == "Upcoming" && r.AvailableSeats > 0).AsQueryable();
             // Search filter
