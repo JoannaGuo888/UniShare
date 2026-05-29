@@ -228,6 +228,7 @@ namespace UniShare.Controllers
         // Passenger: Public Ride Board
         public async Task<IActionResult> PublicRideBoard(string from, string to, DateTime? date)
         {
+            await AutoCancelExpiredRequests();
             await MarkExpiredRides();
             var allRides =  _context.Rides.Include(r => r.Driver).Where(r => r.RideStatus == "Upcoming" && r.AvailableSeats > 0).AsQueryable();
             // Search filter
